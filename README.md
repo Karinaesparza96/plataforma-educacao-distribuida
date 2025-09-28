@@ -411,12 +411,9 @@ dotnet test src/backend/alunos-api/tests/Alunos.IntegrationTests
 ## 📊 Cobertura de Testes
 
 ![Line Coverage](https://img.shields.io/badge/Line%20Coverage-94.8%25-brightgreen)
+![Branch Coverage](https://img.shields.io/badge/Branch%20Coverage-83.5%25-blue)
 
-O relatório detalhado da cobertura de testes pode ser acessado localmente através do seguinte link:
-
-[Relatório de Cobertura Detalhado](./src/backend/tests/coverage-report/index.html)
-
-**Nota:** Para visualizar o relatório, você precisa ter executado os testes e gerado o relatório localmente. O link acima aponta para um arquivo em sua máquina local.
+![Relatório de Cobertura](./src/backend/tests/coverage-report/Coverage.jpg)
 
 ## 🧩 Building Blocks
 A pasta `building-blocks/` contém componentes reutilizáveis entre microserviços:
