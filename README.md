@@ -408,6 +408,13 @@ dotnet test src/backend/alunos-api/tests/Alunos.IntegrationTests
 > Framework utilizado: **xUnit**  
 > Cobertura recomendada: **80%+** (utilizando **Coverlet + ReportGenerator**)
 
+## 📊 Cobertura de Testes
+
+![Line Coverage](https://img.shields.io/badge/Line%20Coverage-94.8%25-brightgreen)
+![Branch Coverage](https://img.shields.io/badge/Branch%20Coverage-83.5%25-blue)
+
+![Relatório de Cobertura](https://raw.githubusercontent.com/jasonamaral/mba.modulo4/feature/correcao_cad_categoria/src/tests/coverage-report/Coverage.jpg)
+
 
 ## 🧩 Building Blocks
 A pasta `building-blocks/` contém componentes reutilizáveis entre microserviços:
