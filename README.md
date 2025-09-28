@@ -408,6 +408,15 @@ dotnet test src/backend/alunos-api/tests/Alunos.IntegrationTests
 > Framework utilizado: **xUnit**  
 > Cobertura recomendada: **80%+** (utilizando **Coverlet + ReportGenerator**)
 
+## 📊 Cobertura de Testes
+
+![Line Coverage](https://img.shields.io/badge/Line%20Coverage-94.8%25-brightgreen)
+
+O relatório detalhado da cobertura de testes pode ser acessado localmente através do seguinte link:
+
+[Relatório de Cobertura Detalhado](./src/backend/tests/coverage-report/index.html)
+
+**Nota:** Para visualizar o relatório, você precisa ter executado os testes e gerado o relatório localmente. O link acima aponta para um arquivo em sua máquina local.
 
 ## 🧩 Building Blocks
 A pasta `building-blocks/` contém componentes reutilizáveis entre microserviços:
