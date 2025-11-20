@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11218.70 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pagamentos.UnitTests", "tests\Pagamentos.UnitTests\Pagamentos.UnitTests\Pagamentos.UnitTests.csproj", "{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pagamentos.IntegrationTests", "tests\Pagamentos.IntegrationTests\Pagamentos.IntegrationTests\Pagamentos.IntegrationTests.csproj", "{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pagamento.AntiCorruption", "src\Pagamento.AntiCorruption\Pagamento.AntiCorruption.csproj", "{31057A2B-7186-3671-BDCC-F1F108E0CBA6}"
 EndProject
@@ -29,30 +25,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Debug|x64.Build.0 = Debug|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Debug|x86.Build.0 = Debug|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Release|x64.ActiveCfg = Release|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Release|x64.Build.0 = Release|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Release|x86.ActiveCfg = Release|Any CPU
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B}.Release|x86.Build.0 = Release|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Debug|x64.Build.0 = Debug|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Debug|x86.Build.0 = Debug|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Release|x64.ActiveCfg = Release|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Release|x64.Build.0 = Release|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Release|x86.ActiveCfg = Release|Any CPU
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122}.Release|x86.Build.0 = Release|Any CPU
 		{31057A2B-7186-3671-BDCC-F1F108E0CBA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{31057A2B-7186-3671-BDCC-F1F108E0CBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31057A2B-7186-3671-BDCC-F1F108E0CBA6}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -118,8 +90,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{9163C0B2-7D18-4585-AC84-6FAFF7A3090B} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
-		{1BF7BEA1-5D4C-4CAC-855E-49B3663B6122} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{31057A2B-7186-3671-BDCC-F1F108E0CBA6} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{B804E1C9-3D5F-F7FE-19D8-8B6A57D0D174} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{2B690685-D467-6474-F66C-3B79D4E46F21} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
