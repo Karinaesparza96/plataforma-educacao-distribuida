@@ -1,0 +1,54 @@
+name: Build Project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.x"
+
+      - name: Restore and Build All .NET Solutions
+        run: |
+          for sln in $(find src -name "*.sln"); do
+            echo "Building $sln"
+            dotnet restore "$sln"
+            dotnet build "$sln" --no-restore --configuration Release
+          done
+
+      - name: Run .NET Tests
+        run: |
+          for testproj in $(find src -name "*Tests.csproj"); do
+            echo "Testing $testproj"
+            dotnet test "$testproj" --no-build --verbosity normal
+          done
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Frontend Dependencies
+        working-directory: src/frontend
+        run: npm install
+
+      - name: Build Frontend
+        working-directory: src/frontend
+        run: npm run build
+
+      - name: Run Frontend Tests
+        working-directory: src/frontend
+        run: npm test
