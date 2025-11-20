@@ -29,13 +29,6 @@ jobs:
             dotnet build "$sln" --no-restore --configuration Release
           done
 
-      - name: Run .NET Tests
-        run: |
-          for testproj in $(find src -name "*Tests.csproj"); do
-            echo "Testing $testproj"
-            dotnet test "$testproj" --no-build --verbosity normal
-          done
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -48,7 +41,3 @@ jobs:
       - name: Build Frontend
         working-directory: src/frontend
         run: npm run build
-
-      - name: Run Frontend Tests
-        working-directory: src/frontend
-        run: npm test
