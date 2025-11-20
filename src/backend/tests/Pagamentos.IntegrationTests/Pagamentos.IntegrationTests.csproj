@@ -32,10 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\building-blocks\core\Core.csproj" />
-    <ProjectReference Include="..\..\..\pagamentos-api\src\Pagamentos.API\Pagamentos.API.csproj" />
-    <ProjectReference Include="..\..\..\pagamentos-api\src\Pagamentos.Application\Pagamentos.Application.csproj" />
-    <ProjectReference Include="..\..\..\pagamentos-api\src\Pagamentos.Domain\Pagamentos.Domain.csproj" />
+    <ProjectReference Include="..\..\building-blocks\core\Core.csproj" />
+    <ProjectReference Include="..\..\pagamentos-api\src\Pagamentos.API\Pagamentos.API.csproj" />
+    <ProjectReference Include="..\..\pagamentos-api\src\Pagamentos.Application\Pagamentos.Application.csproj" />
+    <ProjectReference Include="..\..\pagamentos-api\src\Pagamentos.Domain\Pagamentos.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

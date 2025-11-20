@@ -33,11 +33,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\building-blocks\core\Core.csproj" />
-    <ProjectReference Include="..\..\..\pagamentos-api\src\Pagamento.AntiCorruption\Pagamento.AntiCorruption.csproj" />
-    <ProjectReference Include="..\..\..\pagamentos-api\src\Pagamentos.Application\Pagamentos.Application.csproj" />
-    <ProjectReference Include="..\..\..\pagamentos-api\src\Pagamentos.Domain\Pagamentos.Domain.csproj" />
-    <ProjectReference Include="..\..\..\pagamentos-api\src\Pagamentos.Infrastructure\Pagamentos.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\building-blocks\core\Core.csproj" />
+    <ProjectReference Include="..\..\pagamentos-api\src\Pagamento.AntiCorruption\Pagamento.AntiCorruption.csproj" />
+    <ProjectReference Include="..\..\pagamentos-api\src\Pagamentos.Application\Pagamentos.Application.csproj" />
+    <ProjectReference Include="..\..\pagamentos-api\src\Pagamentos.Domain\Pagamentos.Domain.csproj" />
+    <ProjectReference Include="..\..\pagamentos-api\src\Pagamentos.Infrastructure\Pagamentos.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
