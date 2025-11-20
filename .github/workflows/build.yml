@@ -23,11 +23,70 @@ jobs:
 
       - name: Restore and Build All .NET Solutions
         run: |
-          for sln in $(find src -name "*.sln"); do
-            echo "Building $sln"
-            dotnet restore "$sln"
-            dotnet build "$sln" --no-restore --configuration Release
-          done
+          echo "Building Conteudo.API.sln"
+          dotnet restore src/backend/conteudo-api/Conteudo.API.sln
+          dotnet build src/backend/conteudo-api/Conteudo.API.sln --no-restore --configuration Release
+
+          echo "Building Auth.API.sln"
+          dotnet restore src/backend/auth-api/Auth.API.sln
+          dotnet build src/backend/auth-api/Auth.API.sln --no-restore --configuration Release
+
+          echo "Building Alunos.API.sln"
+          dotnet restore src/backend/alunos-api/Alunos.API.sln
+          dotnet build src/backend/alunos-api/Alunos.API.sln --no-restore --configuration Release
+
+          echo "Building Pagamentos.API.sln"
+          dotnet restore src/backend/pagamentos-api/Pagamentos.API.sln
+          dotnet build src/backend/pagamentos-api/Pagamentos.API.sln --no-restore --configuration Release
+
+          echo "Building BFF.sln"
+          dotnet restore src/backend/bff/BFF.sln
+          dotnet build src/backend/bff/BFF.sln --no-restore --configuration Release
+        
+      - name: Restore and Build All Tests Solutions
+        run: |
+          echo "Building Alunos.IntegrationTests.sln"
+          dotnet restore src/backend/tests/Alunos.IntegrationTests/Alunos.IntegrationTests.sln
+          dotnet build src/backend/tests/Alunos.IntegrationTests/Alunos.IntegrationTests.sln --no-restore --configuration Release
+          
+          echo "Building Alunos.Tests.sln"
+          dotnet restore src/backend/tests/Alunos.Tests/Alunos.Tests.sln
+          dotnet build src/backend/tests/Alunos.Tests/Alunos.Tests.sln --no-restore --configuration Release
+
+          echo "Building Auth.IntegrationTests.sln"
+          dotnet restore src/backend/tests/Auth.IntegrationTests/Auth.IntegrationTests.sln
+          dotnet build src/backend/tests/Auth.IntegrationTests/Auth.IntegrationTests.sln --no-restore --configuration Release
+          echo "Building Auth.UnitTests.sln"
+          dotnet restore src/backend/tests/Auth.UnitTests/Auth.UnitTests.sln
+          dotnet build src/backend/tests/Auth.UnitTests/Auth.UnitTests.sln --no-restore --configuration Release
+
+          echo "Building BFF.IntegrationTests.sln"
+          dotnet restore src/backend/tests/BFF.IntegrationTests/BFF.IntegrationTests.sln
+          dotnet build src/backend/tests/BFF.IntegrationTests/BFF.IntegrationTests.sln --no-restore --configuration Release
+
+          echo "Building BFF.UnitTests.sln"
+          dotnet restore src/backend/tests/BFF.UnitTests/BFF.UnitTests.sln
+          dotnet build src/backend/tests/BFF.UnitTests/BFF.UnitTests.sln --no-restore --configuration Release
+
+          echo "Building Conteudo.IntegrationTests.sln"
+          dotnet restore src/backend/tests/Conteudo.IntegrationTests/Conteudo.IntegrationTests.sln
+          dotnet build src/backend/tests/Conteudo.IntegrationTests/Conteudo.IntegrationTests.sln --no-restore --configuration Release
+
+          echo "Building Conteudo.UnitTests.sln"
+          dotnet restore src/backend/tests/Conteudo.UnitTests/Conteudo.UnitTests.sln
+          dotnet build src/backend/tests/Conteudo.UnitTests/Conteudo.UnitTests.sln --no-restore --configuration Release
+
+          echo "Building Core.Tests.sln"
+          dotnet restore src/backend/tests/Core.Tests/Core.Tests.sln
+          dotnet build src/backend/tests/Core.Tests/Core.Tests.sln --no-restore --configuration Release
+
+          echo "Building Pagamentos.IntegrationTests.sln"
+          dotnet restore src/backend/tests/Pagamentos.IntegrationTests/Pagamentos.IntegrationTests.sln
+          dotnet build src/backend/tests/Pagamentos.IntegrationTests/Pagamentos.IntegrationTests.sln --no-restore --configuration Release
+
+          echo "Building Pagamentos.UnitTests.sln"
+          dotnet restore src/backend/tests/Pagamentos.UnitTests/Pagamentos.UnitTests.sln
+          dotnet build src/backend/tests/Pagamentos.UnitTests/Pagamentos.UnitTests.sln --no-restore --configuration Release
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
