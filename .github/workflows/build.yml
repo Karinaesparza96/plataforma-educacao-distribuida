@@ -48,6 +48,7 @@ jobs:
           echo "Building Alunos.IntegrationTests.csproj"
           dotnet restore src/backend/tests/Alunos.IntegrationTests/Alunos.IntegrationTests.csproj
           dotnet build src/backend/tests/Alunos.IntegrationTests/Alunos.IntegrationTests.csproj --no-restore --configuration Release
+
           echo "Building Alunos.Tests.csproj"
           dotnet restore src/backend/tests/Alunos.Tests/Alunos.Tests.csproj
           dotnet build src/backend/tests/Alunos.Tests/Alunos.Tests.csproj --no-restore --configuration Release
@@ -55,6 +56,7 @@ jobs:
           echo "Building Auth.IntegrationTests.csproj"
           dotnet restore src/backend/tests/Auth.IntegrationTests/Auth.IntegrationTests.csproj
           dotnet build src/backend/tests/Auth.IntegrationTests/Auth.IntegrationTests.csproj --no-restore --configuration Release
+
           echo "Building Auth.UnitTests.csproj"
           dotnet restore src/backend/tests/Auth.UnitTests/Auth.UnitTests.csproj
           dotnet build src/backend/tests/Auth.UnitTests/Auth.UnitTests.csproj --no-restore --configuration Release
@@ -62,6 +64,7 @@ jobs:
           echo "Building BFF.IntegrationTests.csproj"
           dotnet restore src/backend/tests/BFF.IntegrationTests/BFF.IntegrationTests.csproj
           dotnet build src/backend/tests/BFF.IntegrationTests/BFF.IntegrationTests.csproj --no-restore --configuration Release
+
           echo "Building BFF.UnitTests.csproj"
           dotnet restore src/backend/tests/BFF.UnitTests/BFF.UnitTests.csproj
           dotnet build src/backend/tests/BFF.UnitTests/BFF.UnitTests.csproj --no-restore --configuration Release
@@ -69,6 +72,7 @@ jobs:
           echo "Building Conteudo.IntegrationTests.csproj"
           dotnet restore src/backend/tests/Conteudo.IntegrationTests/Conteudo.IntegrationTests.csproj
           dotnet build src/backend/tests/Conteudo.IntegrationTests/Conteudo.IntegrationTests.csproj --no-restore --configuration Release
+
           echo "Building Conteudo.UnitTests.csproj"
           dotnet restore src/backend/tests/Conteudo.UnitTests/Conteudo.UnitTests.csproj
           dotnet build src/backend/tests/Conteudo.UnitTests/Conteudo.UnitTests.csproj --no-restore --configuration Release
@@ -76,6 +80,7 @@ jobs:
           echo "Building Core.Tests.csproj"
           dotnet restore src/backend/tests/Core.Tests/Core.Tests.csproj
           dotnet build src/backend/tests/Core.Tests/Core.Tests.csproj --no-restore --configuration Release
+          
           echo "Building Pagamentos.IntegrationTests.csproj"
           dotnet restore src/backend/tests/Pagamentos.IntegrationTests/Pagamentos.IntegrationTests.csproj
           dotnet build src/backend/tests/Pagamentos.IntegrationTests/Pagamentos.IntegrationTests.csproj --no-restore --configuration Release
