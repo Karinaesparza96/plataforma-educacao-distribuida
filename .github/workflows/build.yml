@@ -39,9 +39,9 @@ jobs:
           dotnet restore src/backend/pagamentos-api/Pagamentos.API.sln
           dotnet build src/backend/pagamentos-api/Pagamentos.API.sln --no-restore --configuration Release
 
-          echo "Building BFF.sln"
-          dotnet restore src/backend/bff/BFF.sln
-          dotnet build src/backend/bff/BFF.sln --no-restore --configuration Release
+          echo "Building BFF.API.sln"
+          dotnet restore src/backend/bff/BFF.API.sln
+          dotnet build src/backend/bff/BFF.API.sln --no-restore --configuration Release
         
       - name: Restore and Build All Tests Solutions
         run: |
