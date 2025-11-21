@@ -322,7 +322,7 @@ public class AlunoTests
         a.AtualizarPagamentoMatricula(m.Id);
 
         // finaliza a aula e conclui
-        a.RegistrarHistoricoAprendizado(m.Id, Guid.NewGuid(), "Aula 1", 5, DateTime.UtcNow);
+        a.RegistrarHistoricoAprendizado(m.Id, Guid.NewGuid(), "Aula 1", 5, DateTime.Now);
         a.ConcluirCurso(m.Id);
 
         m.EstadoMatricula.Should().Be(EstadoMatriculaCurso.Concluido);

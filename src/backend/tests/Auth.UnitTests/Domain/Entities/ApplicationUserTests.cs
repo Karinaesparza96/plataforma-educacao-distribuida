@@ -46,7 +46,7 @@ public class ApplicationUserTests : TestBase
         user.Cidade.Should().Be(cidade);
         user.Estado.Should().Be(estado);
         user.CEP.Should().Be(cep);
-        user.DataCadastro.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        user.DataCadastro.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMinutes(1));
         user.Ativo.Should().BeTrue();
     }
 
@@ -57,7 +57,7 @@ public class ApplicationUserTests : TestBase
         var user = new ApplicationUser();
 
         // Assert
-        user.DataCadastro.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        user.DataCadastro.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMinutes(1));
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public class ApplicationUserTests : TestBase
         // Arrange
         var user = new ApplicationUser();
         var refreshToken = Guid.NewGuid();
-        var expiryTime = DateTime.UtcNow.AddHours(1);
+        var expiryTime = DateTime.Now.AddHours(1);
 
         // Act
         user.RefreshToken = refreshToken;
@@ -151,7 +151,7 @@ public class ApplicationUserTests : TestBase
         u.Foto.Should().BeNull();
 
         // DataCadastro ~ UtcNow
-        var antes = DateTime.UtcNow.AddSeconds(-1);
+        var antes = DateTime.Now.AddSeconds(-1);
         u.DataCadastro.Should().BeOnOrAfter(antes);
 
         // flags/tokens
@@ -222,11 +222,11 @@ public class ApplicationUserTests : TestBase
         var u = new ApplicationUser
         {
             RefreshToken = Guid.NewGuid(),
-            RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(5)
+            RefreshTokenExpiryTime = DateTime.Now.AddDays(5)
         };
 
         u.RefreshToken.Should().NotBeNull();
         u.RefreshTokenExpiryTime.Should().NotBeNull();
-        u.RefreshTokenExpiryTime!.Value.Should().BeAfter(DateTime.UtcNow.AddDays(4));
+        u.RefreshTokenExpiryTime!.Value.Should().BeAfter(DateTime.Now.AddDays(4));
     }
 }

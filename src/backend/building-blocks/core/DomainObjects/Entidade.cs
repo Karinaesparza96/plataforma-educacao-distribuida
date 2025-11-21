@@ -14,7 +14,7 @@ public abstract class Entidade
     protected Entidade()
     {
         Id = Guid.NewGuid();
-        CreatedAt = DateTime.UtcNow;
+        CreatedAt = DateTime.Now;
     }
 
     public void DefinirId(Guid id)
@@ -24,7 +24,7 @@ public abstract class Entidade
 
     public void AtualizarDataModificacao()
     {
-        UpdatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.Now;
     }
 
     public override bool Equals(object? obj)

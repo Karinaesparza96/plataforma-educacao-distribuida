@@ -10,7 +10,7 @@ public class RefreshTokenTests : TestBase
         // Arrange
         var token = Guid.NewGuid();
         var username = Faker.Person.Email;
-        var expirationDate = DateTime.UtcNow.AddHours(24);
+        var expirationDate = DateTime.Now.AddHours(24);
 
         // Act
         var refreshToken = new RefreshToken
@@ -36,7 +36,7 @@ public class RefreshTokenTests : TestBase
         // Act
         var newToken = Guid.NewGuid();
         var newUsername = Faker.Person.Email;
-        var newExpirationDate = DateTime.UtcNow.AddDays(7);
+        var newExpirationDate = DateTime.Now.AddDays(7);
 
         refreshToken.Token = newToken;
         refreshToken.Username = newUsername;
@@ -78,7 +78,7 @@ public class RefreshTokenTests : TestBase
     public void RefreshToken_DeveAceitarDataExpiracaoNoPassado()
     {
         // Arrange
-        var pastDate = DateTime.UtcNow.AddHours(-1);
+        var pastDate = DateTime.Now.AddHours(-1);
 
         // Act
         var refreshToken = new RefreshToken
@@ -94,7 +94,7 @@ public class RefreshTokenTests : TestBase
     public void RefreshToken_DeveAceitarDataExpiracaoNoFuturo()
     {
         // Arrange
-        var futureDate = DateTime.UtcNow.AddHours(1);
+        var futureDate = DateTime.Now.AddHours(1);
 
         // Act
         var refreshToken = new RefreshToken
@@ -110,7 +110,7 @@ public class RefreshTokenTests : TestBase
     public void RefreshToken_DeveAceitarDataExpiracaoAgora()
     {
         // Arrange
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
 
         // Act
         var refreshToken = new RefreshToken
@@ -178,7 +178,7 @@ public class RefreshTokenTests : TestBase
         // Arrange
         var token = Guid.NewGuid();
         var username = Faker.Person.Email;
-        var expirationDate = DateTime.UtcNow.AddHours(12);
+        var expirationDate = DateTime.Now.AddHours(12);
 
         // Act
         var refreshToken = new RefreshToken
@@ -214,10 +214,10 @@ public class RefreshTokenTests : TestBase
         var t = new RefreshToken
         {
             Username = "user",
-            ExpirationDate = DateTime.UtcNow.AddDays(7)
+            ExpirationDate = DateTime.Now.AddDays(7)
         };
 
         t.Username.Should().Be("user");
-        t.ExpirationDate.Should().BeAfter(DateTime.UtcNow.AddDays(6)).And.BeBefore(DateTime.UtcNow.AddDays(8));
+        t.ExpirationDate.Should().BeAfter(DateTime.Now.AddDays(6)).And.BeBefore(DateTime.Now.AddDays(8));
     }
 }

@@ -175,7 +175,7 @@ public class AulaTests
 
         a.IsPublicada.Should().BeTrue();
         a.DataPublicacao.Should().NotBeNull();
-        a.DataPublicacao!.Value.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(10));
+        a.DataPublicacao!.Value.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
     }
 
     [Fact]

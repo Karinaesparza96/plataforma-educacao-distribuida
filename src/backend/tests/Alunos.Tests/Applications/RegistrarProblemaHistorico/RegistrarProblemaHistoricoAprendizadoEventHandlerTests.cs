@@ -31,7 +31,7 @@ public class RegistrarProblemaHistoricoAprendizadoEventHandlerTests
         var mediator = new Mock<IMediatorHandler>();
         var handler = new RegistrarProblemaHistoricoAprendizadoEventHandler(mediator.Object);
 
-        var evt = new RegistrarProblemaHistoricoAprendizadoEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.UtcNow, "x");
+        var evt = new RegistrarProblemaHistoricoAprendizadoEvent(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, "x");
 
         await handler.Handle(evt, CancellationToken.None);
 

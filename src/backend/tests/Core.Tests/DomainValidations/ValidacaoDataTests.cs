@@ -13,7 +13,7 @@ public class ValidacaoDataTests
         r1.Invoking(x => x.DispararExcecaoDominioSeInvalido()).Should().Throw<Exception>();
 
         var r2 = new ResultadoValidacao<Dummy>();
-        ValidacaoData.DeveSerValido(DateTime.UtcNow, "data inválida", r2);
+        ValidacaoData.DeveSerValido(DateTime.Now, "data inválida", r2);
         r2.Invoking(x => x.DispararExcecaoDominioSeInvalido()).Should().NotThrow();
     }
 

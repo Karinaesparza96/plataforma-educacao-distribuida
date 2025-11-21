@@ -10,7 +10,7 @@ public class BffApiTests
     {
         // Arrange
         var status = "Healthy";
-        var timestamp = DateTime.UtcNow;
+        var timestamp = DateTime.Now;
         var version = "1.0.0";
         var environment = "Development";
 
@@ -44,7 +44,7 @@ public class BffApiTests
         var name = "Test Service";
         var status = "Healthy";
         var responseTime = "10ms";
-        var lastCheck = DateTime.UtcNow;
+        var lastCheck = DateTime.Now;
 
         // Act
         var service = new ServiceHealthResponse
@@ -70,7 +70,7 @@ public class BffApiTests
         var name = "Test API";
         var version = "2.0.0";
         var environment = "Production";
-        var startTime = DateTime.UtcNow.AddHours(-2);
+        var startTime = DateTime.Now.AddHours(-2);
         var uptime = TimeSpan.FromHours(2);
         var status = "Running";
 
@@ -108,7 +108,7 @@ public class BffApiTests
         var response = new HealthCheckResponse
         {
             Status = "Unhealthy",
-            Timestamp = DateTime.UtcNow,
+            Timestamp = DateTime.Now,
             Version = "0.1.0",
             Environment = "Test",
             Services = new List<ServiceHealthResponse>()
@@ -151,7 +151,7 @@ public class BffApiTests
             Name = "Minimal API",
             Version = "0.0.1",
             Environment = "Local",
-            StartTime = DateTime.UtcNow,
+            StartTime = DateTime.Now,
             Uptime = TimeSpan.Zero,
             Status = "Starting",
             Configuration = new Dictionary<string, object>()
@@ -172,16 +172,16 @@ public class BffApiTests
         // Arrange
         var services = new List<ServiceHealthResponse>
         {
-            new() { Name = "Service 1", Status = "Healthy", ResponseTime = "5ms", LastCheck = DateTime.UtcNow },
-            new() { Name = "Service 2", Status = "Unhealthy", ResponseTime = "100ms", LastCheck = DateTime.UtcNow.AddMinutes(-5) },
-            new() { Name = "Service 3", Status = "Degraded", ResponseTime = "50ms", LastCheck = DateTime.UtcNow.AddMinutes(-1) }
+            new() { Name = "Service 1", Status = "Healthy", ResponseTime = "5ms", LastCheck = DateTime.Now },
+            new() { Name = "Service 2", Status = "Unhealthy", ResponseTime = "100ms", LastCheck = DateTime.Now.AddMinutes(-5) },
+            new() { Name = "Service 3", Status = "Degraded", ResponseTime = "50ms", LastCheck = DateTime.Now.AddMinutes(-1) }
         };
 
         // Act
         var response = new HealthCheckResponse
         {
             Status = "Degraded",
-            Timestamp = DateTime.UtcNow,
+            Timestamp = DateTime.Now,
             Version = "1.0.0",
             Environment = "Production",
             Services = services
@@ -216,7 +216,7 @@ public class BffApiTests
             Name = "Full API",
             Version = "2.1.0",
             Environment = "Staging",
-            StartTime = DateTime.UtcNow.AddDays(-1),
+            StartTime = DateTime.Now.AddDays(-1),
             Uptime = TimeSpan.FromDays(1),
             Status = "Running",
             Configuration = configuration

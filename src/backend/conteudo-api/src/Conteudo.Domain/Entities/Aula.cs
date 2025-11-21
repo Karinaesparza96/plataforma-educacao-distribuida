@@ -103,7 +103,7 @@ public class Aula : Entidade, IRaizAgregacao
             throw new DomainException("Aula já está publicada");
 
         IsPublicada = true;
-        DataPublicacao = DateTime.UtcNow;
+        DataPublicacao = DateTime.Now;
         AtualizarDataModificacao();
     }
 

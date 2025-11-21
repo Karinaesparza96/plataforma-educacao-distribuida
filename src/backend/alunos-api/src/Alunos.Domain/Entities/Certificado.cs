@@ -33,7 +33,7 @@ public class Certificado : Entidade
     {
         MatriculaCursoId = matriculaId;
         NomeCurso = nomeCurso?.Trim() ?? string.Empty;
-        DataSolicitacao = dataSolicitacao ?? DateTime.UtcNow;
+        DataSolicitacao = dataSolicitacao ?? DateTime.Now;
         DataEmissao = dataEmissao;
         CargaHoraria = cargaHoraria;
         NotaFinal = notaFinal;

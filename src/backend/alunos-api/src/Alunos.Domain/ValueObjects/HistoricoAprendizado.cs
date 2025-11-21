@@ -31,7 +31,7 @@ public class HistoricoAprendizado
         AulaId = aulaId;
         NomeAula = nomeAula?.Trim() ?? string.Empty;
         CargaHoraria = cargaHoraria;
-        DataInicio = dataInicio ?? DateTime.UtcNow.Date;
+        DataInicio = dataInicio ?? DateTime.Now;
         DataTermino = dataTermino;
 
         ValidarIntegridadeHistoricoAprendizado();

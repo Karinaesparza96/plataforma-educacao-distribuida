@@ -143,7 +143,7 @@ public class AuthServiceTests
         var token = new RefreshToken
         {
             Username = "x@y.com",
-            ExpirationDate = DateTime.UtcNow.AddMinutes(10) // não expirado
+            ExpirationDate = DateTime.Now.AddMinutes(10) // não expirado
         };
         ef.RefreshTokens.Add(token);
         await ef.SaveChangesAsync();
@@ -165,7 +165,7 @@ public class AuthServiceTests
         var token = new RefreshToken
         {
             Username = "x@y.com",
-            ExpirationDate = DateTime.UtcNow.AddMinutes(-1) // expirado
+            ExpirationDate = DateTime.Now.AddMinutes(-1) // expirado
         };
         ef.RefreshTokens.Add(token);
         await ef.SaveChangesAsync();

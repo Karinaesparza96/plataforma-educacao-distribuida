@@ -27,7 +27,7 @@ public class DatabaseIntegrationTests
             CEP = "01234-567",
             Foto = "https://exemplo.com/foto.jpg",
             Ativo = true,
-            DataCadastro = DateTime.UtcNow
+            DataCadastro = DateTime.Now
         };
 
         // Assert
@@ -37,7 +37,7 @@ public class DatabaseIntegrationTests
         user.CPF.Should().Be(cpf);
         user.DataNascimento.Should().Be(dataNascimento);
         user.Ativo.Should().BeTrue();
-        user.DataCadastro.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        user.DataCadastro.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMinutes(1));
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class DatabaseIntegrationTests
         // Arrange
         var token = Guid.NewGuid();
         var username = "usuario@teste.com";
-        var expirationDate = DateTime.UtcNow.AddHours(24);
+        var expirationDate = DateTime.Now.AddHours(24);
 
         // Act
         var refreshToken = new RefreshToken
@@ -81,7 +81,7 @@ public class DatabaseIntegrationTests
         {
             Token = Guid.NewGuid(),
             Username = user.Email,
-            ExpirationDate = DateTime.UtcNow.AddHours(1)
+            ExpirationDate = DateTime.Now.AddHours(1)
         };
 
         // Act & Assert
@@ -116,7 +116,7 @@ public class DatabaseIntegrationTests
         // Act
         var newToken = Guid.NewGuid();
         var newUsername = "novo@usuario.com";
-        var newExpirationDate = DateTime.UtcNow.AddDays(7);
+        var newExpirationDate = DateTime.Now.AddDays(7);
 
         refreshToken.Token = newToken;
         refreshToken.Username = newUsername;
@@ -155,7 +155,7 @@ public class DatabaseIntegrationTests
         {
             Token = Guid.NewGuid(),
             Username = "usuario@teste.com",
-            ExpirationDate = DateTime.UtcNow.AddHours(1)
+            ExpirationDate = DateTime.Now.AddHours(1)
         };
 
         // Assert

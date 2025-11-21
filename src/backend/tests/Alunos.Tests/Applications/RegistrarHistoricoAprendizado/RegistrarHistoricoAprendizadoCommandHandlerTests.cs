@@ -66,12 +66,12 @@ public class RegistrarHistoricoAprendizadoCommandHandlerTests
     [Fact]
     public async Task HappyPath_deve_registrar_historico_atualizar_e_commit()
     {
-        var cmd = new RegistrarHistoricoAprendizadoCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "Modulo A1 :: Introcução", 10, DateTime.UtcNow);
+        var cmd = new RegistrarHistoricoAprendizadoCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "Modulo A1 :: Introcução", 10, DateTime.Now);
         var sut = CriarSut();
 
         var aluno = NovoAlunoComMatricula(out var matricula);
         // garantir que o comando usa a matrícula do aluno
-        cmd = new RegistrarHistoricoAprendizadoCommand(aluno.Id, matricula.Id, Guid.NewGuid(), "Modulo A1 :: Introcução", 10, DateTime.UtcNow);
+        cmd = new RegistrarHistoricoAprendizadoCommand(aluno.Id, matricula.Id, Guid.NewGuid(), "Modulo A1 :: Introcução", 10, DateTime.Now);
 
         _repo.Setup(r => r.ObterPorIdAsync(aluno.Id, true)).ReturnsAsync(aluno);
 

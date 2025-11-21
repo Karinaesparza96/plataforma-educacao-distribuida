@@ -12,7 +12,7 @@ public class Aluno : Entidade, IRaizAgregacao
     public string Email { get; private set; }
     public string Cpf { get; }
     public DateTime DataNascimento { get; private set; }
-    public string Telefone { get; private set; } // Não é validado! Falar com a equipe
+    public string Telefone { get; private set; }
     public bool Ativo { get; private set; }
     public string Genero { get; private set; }
     public string Cidade { get; private set; }

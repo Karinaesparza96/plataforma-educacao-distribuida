@@ -52,7 +52,7 @@ public class AuthControllerTests : TestBase
         // Arrange
         var token = Guid.NewGuid();
         var username = "joao@teste.com";
-        var expirationDate = DateTime.UtcNow.AddDays(7);
+        var expirationDate = DateTime.Now.AddDays(7);
 
         // Act
         var refreshToken = new RefreshToken
@@ -93,7 +93,7 @@ public class AuthControllerTests : TestBase
         var email = "maria@teste.com";
         var userName = "maria.santos";
         var phoneNumber = "11987654321";
-        var lockoutEnd = DateTime.UtcNow.AddMinutes(30);
+        var lockoutEnd = DateTime.Now.AddMinutes(30);
 
         // Act
         var user = new ApplicationUser
@@ -124,7 +124,7 @@ public class AuthControllerTests : TestBase
         // Arrange
         var token = Guid.NewGuid();
         var username = "admin@teste.com";
-        var expirationDate = DateTime.UtcNow.AddDays(30);
+        var expirationDate = DateTime.Now.AddDays(30);
 
         // Act
         var refreshToken = new RefreshToken

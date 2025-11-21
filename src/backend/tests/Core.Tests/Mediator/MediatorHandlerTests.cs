@@ -81,7 +81,7 @@ public class MediatorHandlerTests
         // Assert
         comando.Should().NotBeNull();
         comando.RaizAgregacao.Should().Be(Guid.Empty);
-        comando.DataHora.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        comando.DataHora.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMinutes(1));
         comando.Validacao.Should().NotBeNull();
         comando.Resultado.Should().NotBeNull();
     }
@@ -95,7 +95,7 @@ public class MediatorHandlerTests
         // Assert
         evento.Should().NotBeNull();
         evento.RaizAgregacao.Should().Be(Guid.Empty);
-        evento.DataHora.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        evento.DataHora.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMinutes(1));
         evento.Validacao.Should().BeNull();
     }
 

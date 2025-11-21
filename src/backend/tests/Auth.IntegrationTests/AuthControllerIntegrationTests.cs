@@ -45,7 +45,7 @@ public class AuthControllerIntegrationTests
         // Arrange
         var token = Guid.NewGuid();
         var username = "usuario@teste.com";
-        var expirationDate = DateTime.UtcNow.AddHours(24);
+        var expirationDate = DateTime.Now.AddHours(24);
 
         // Act
         var refreshToken = new RefreshToken
@@ -84,7 +84,7 @@ public class AuthControllerIntegrationTests
     {
         // Arrange
         var refreshToken = new RefreshToken();
-        var newExpirationDate = DateTime.UtcNow.AddDays(7);
+        var newExpirationDate = DateTime.Now.AddDays(7);
 
         // Act
         var newToken = Guid.NewGuid();
