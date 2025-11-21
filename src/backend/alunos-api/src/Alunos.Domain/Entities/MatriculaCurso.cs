@@ -40,7 +40,7 @@ public class MatriculaCurso : Entidade
         CursoId = cursoId;
         NomeCurso = nomeCurso?.Trim() ?? string.Empty;
         Valor = valor;
-        DataMatricula = DateTime.UtcNow;
+        DataMatricula = DateTime.Now;
         EstadoMatricula = EstadoMatriculaCurso.PendentePagamento;
         Observacao = observacao;
 
@@ -106,7 +106,7 @@ public class MatriculaCurso : Entidade
         if (!MatriculaCursoDisponivel()) { throw new DomainException("Matrícula não está disponível para registrar histórico de aprendizado"); }
 
         var historicoExistente = _historicoAprendizado.FirstOrDefault(h => h.CursoId == CursoId && h.AulaId == aulaId);
-        DateTime? dataInicio = historicoExistente?.DataInicio ?? DateTime.UtcNow;
+        DateTime? dataInicio = historicoExistente?.DataInicio ?? DateTime.Now;
         if (historicoExistente != null)
         {
             if (historicoExistente.DataTermino.HasValue) { throw new DomainException("Esta aula já foi concluída"); }
@@ -122,7 +122,7 @@ public class MatriculaCurso : Entidade
         if (Certificado != null) { throw new DomainException("Certificado já foi solicitado para esta matrícula"); }
         if (!MatriculaCursoConcluido()) { throw new DomainException("Certificado só pode ser solicitado após a conclusão do curso"); }
 
-        Certificado = new Certificado(Id, NomeCurso, DateTime.UtcNow, null, QuantidadeTotalCargaHoraria(), notaFinal, pathCertificado, nomeInstrutor);
+        Certificado = new Certificado(Id, NomeCurso, DateTime.Now, null, QuantidadeTotalCargaHoraria(), notaFinal, pathCertificado, nomeInstrutor);
     }
 
     private void VerificarSeCertificadoExiste()

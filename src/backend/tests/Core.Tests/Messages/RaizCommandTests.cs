@@ -19,7 +19,7 @@ public class CommandRaizTests
         // Assert
         comando.Should().NotBeNull();
         comando.RaizAgregacao.Should().Be(Guid.Empty);
-        comando.DataHora.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        comando.DataHora.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMinutes(1));
         comando.Validacao.Should().NotBeNull();
         comando.Resultado.Should().NotBeNull();
         comando.Erros.Should().BeEmpty();
@@ -121,9 +121,9 @@ public class CommandRaizTests
     [Fact]
     public void Ctor_deve_inicializar_DataHora_UTC_e_Resultado_com_Validacao_vazia()
     {
-        var antes = DateTime.UtcNow.AddSeconds(-1);
+        var antes = DateTime.Now.AddSeconds(-1);
         var cmd = new ComandoTeste();
-        var depois = DateTime.UtcNow.AddSeconds(1);
+        var depois = DateTime.Now.AddSeconds(1);
 
         cmd.DataHora.Should().BeOnOrAfter(antes).And.BeOnOrBefore(depois);
         cmd.Resultado.Should().NotBeNull();

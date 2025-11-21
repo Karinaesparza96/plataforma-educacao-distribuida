@@ -28,7 +28,7 @@ public class SolicitarCertificadoCommandHandlerTests
         matricula = aluno.MatricularAlunoEmCurso(Guid.NewGuid(), "Curso avançado de DDD", 100, "obs");
         matricula.RegistrarPagamentoMatricula();
 
-        matricula.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Modulo A1 :: Introcução", 10, DateTime.UtcNow);
+        matricula.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Modulo A1 :: Introcução", 10, DateTime.Now);
         matricula.ConcluirCurso();
 
         return aluno;

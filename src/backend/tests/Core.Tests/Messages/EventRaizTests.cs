@@ -19,7 +19,7 @@ public class EventRaizTests
         // Assert
         evento.Should().NotBeNull();
         evento.RaizAgregacao.Should().Be(Guid.Empty);
-        evento.DataHora.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        evento.DataHora.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMinutes(1));
         evento.Validacao.Should().BeNull();
         evento.Erros.Should().BeEmpty();
         evento.EstaValido().Should().BeTrue();
@@ -134,9 +134,9 @@ public class EventRaizTests
     [Fact]
     public void Ctor_deve_definir_DataHora_UTC()
     {
-        var antes = DateTime.UtcNow.AddSeconds(-1);
+        var antes = DateTime.Now.AddSeconds(-1);
         var e = new EventoTeste();
-        var depois = DateTime.UtcNow.AddSeconds(1);
+        var depois = DateTime.Now.AddSeconds(1);
 
         e.DataHora.Should().BeOnOrAfter(antes).And.BeOnOrBefore(depois);
     }

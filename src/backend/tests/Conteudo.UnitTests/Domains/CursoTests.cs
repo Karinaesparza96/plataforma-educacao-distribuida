@@ -240,7 +240,7 @@ public class CursoTests
     [Fact]
     public void EstaExpirado_e_PodeSerMatriculado_devem_refletir_validade()
     {
-        var ontem = DateTime.UtcNow.AddDays(-1);
+        var ontem = DateTime.Now.AddDays(-1);
         var c = new CursoBuilder().ValidoAte(ontem).Build();
 
         c.EstaExpirado.Should().BeTrue();

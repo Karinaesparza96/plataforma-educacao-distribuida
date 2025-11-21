@@ -34,7 +34,7 @@ public class ApplicationUser : IdentityUser
     [StringLength(500)]
     public string? Foto { get; set; }
 
-    public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
+    public DateTime DataCadastro { get; set; } = DateTime.Now;
 
     public bool Ativo { get; set; } = true;
 

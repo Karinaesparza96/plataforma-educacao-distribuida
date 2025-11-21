@@ -18,7 +18,7 @@ public class EntidadeTests
         // Assert
         entidade.Should().NotBeNull();
         entidade.Id.Should().NotBe(Guid.Empty);
-        entidade.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        entidade.CreatedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMinutes(1));
         entidade.UpdatedAt.Should().BeNull();
     }
 
@@ -48,7 +48,7 @@ public class EntidadeTests
 
         // Assert
         entidade.UpdatedAt.Should().NotBeNull();
-        entidade.UpdatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        entidade.UpdatedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMinutes(1));
     }
 
     [Fact]
@@ -104,11 +104,11 @@ public class EntidadeTests
     [Fact]
     public void Ctor_deve_definir_Id_e_CreatedAt_e_UpdatedAt_nulo()
     {
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
         var e = new EntidadeTeste();
 
         e.Id.Should().NotBe(Guid.Empty);
-        e.CreatedAt.Should().BeOnOrAfter(now).And.BeOnOrBefore(DateTime.UtcNow.AddSeconds(1));
+        e.CreatedAt.Should().BeOnOrAfter(now).And.BeOnOrBefore(DateTime.Now.AddSeconds(1));
         e.UpdatedAt.Should().BeNull();
     }
 
@@ -130,6 +130,6 @@ public class EntidadeTests
         e.AtualizarDataModificacao();
 
         e.UpdatedAt.Should().NotBeNull();
-        e.UpdatedAt!.Value.Should().BeOnOrBefore(DateTime.UtcNow);
+        e.UpdatedAt!.Value.Should().BeOnOrBefore(DateTime.Now);
     }
 }

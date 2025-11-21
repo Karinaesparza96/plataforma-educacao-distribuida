@@ -9,7 +9,7 @@ public abstract class RaizCommand : IRequest<CommandResult>
     private readonly CommandResult _resultado;
 
     public Guid RaizAgregacao { get; private set; }
-    public DateTime DataHora { get; } = DateTime.UtcNow;
+    public DateTime DataHora { get; } = DateTime.Now;
     public ValidationResult Validacao { get; private set; } = new();
 
     public CommandResult Resultado => _resultado;

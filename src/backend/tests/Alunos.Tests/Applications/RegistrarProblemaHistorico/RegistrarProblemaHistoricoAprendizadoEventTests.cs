@@ -10,7 +10,7 @@ public class RegistrarProblemaHistoricoAprendizadoEventTests
         var aluno = Guid.NewGuid();
         var matricula = Guid.NewGuid();
         var aula = Guid.NewGuid();
-        var dt = DateTime.UtcNow;
+        var dt = DateTime.Now;
 
         var evt = new RegistrarProblemaHistoricoAprendizadoEvent(aluno, matricula, aula, dt, "falhou");
 

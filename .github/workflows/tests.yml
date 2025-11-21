@@ -1,0 +1,48 @@
+name: Run Automated Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  discover-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      test_projects: ${{ steps.find_tests.outputs.test_projects }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find all test projects
+        id: find_tests
+        run: |
+          TESTS=$(find src/backend/tests -name "*.csproj" | jq -R -s -c 'split("\n")[:-1]')
+          echo "Found test projects: $TESTS"
+          echo "test_projects=$TESTS" >> $GITHUB_OUTPUT
+
+  run-tests:
+    needs: discover-tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.discover-tests.outputs.test_projects) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.x"
+
+      - name: Restore project
+        run: dotnet restore ${{ matrix.project }}
+
+      - name: Run tests
+        run: dotnet test ${{ matrix.project }} --configuration Release --logger "trx"

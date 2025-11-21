@@ -49,7 +49,7 @@ public class AlunoRepositoryTests : IDisposable
 
     private static Certificado NovoCertificado(Guid matriculaId, string nomeCurso = "Curso DDD")
         => new Certificado(matriculaId, nomeCurso,
-                           DateTime.UtcNow.AddDays(-1), // solicitação não-futura
+                           DateTime.Now.AddDays(-1), // solicitação não-futura
                            null,                        // sem emissão
                            5, 8m, "certs/1.pdf", "Instrutor");
 
@@ -139,7 +139,7 @@ public class AlunoRepositoryTests : IDisposable
         // cria matrícula já com 1 histórico em andamento
         var matricula = NovaMatricula(aluno.Id, cursoId, "Curso Avançado DDD");
         matricula.RegistrarPagamentoMatricula();
-        var inicio = DateTime.UtcNow.AddDays(-2);
+        var inicio = DateTime.Now.AddDays(-2);
         var historico = NovoHistorico(matricula.Id, cursoId, aulaId, inicio);
         matricula.RegistrarHistoricoAprendizado(aulaId, "Aula 1 - O que devo saber antes de iniciar", 5); // complemento de domínio
 
@@ -171,7 +171,7 @@ public class AlunoRepositoryTests : IDisposable
         // cria matrícula + VO inicial (em andamento)
         var matricula = NovaMatricula(aluno.Id, cursoId, "Curso Especialista DDD");
         matricula.RegistrarPagamentoMatricula();
-        var inicio = DateTime.UtcNow.AddDays(-3);
+        var inicio = DateTime.Now.AddDays(-3);
         var hAntigo = NovoHistorico(matricula.Id, cursoId, aulaId, inicio, termino: null);
         // registra via domínio para garantir consistência
         matricula.RegistrarHistoricoAprendizado(aulaId, "Aula 1 - Introdução", 5);
@@ -184,7 +184,7 @@ public class AlunoRepositoryTests : IDisposable
         var antigo = mReload!.HistoricoAprendizado!.Single();
 
         // cria VO novo (concluído)
-        var hNovo = NovoHistorico(matricula.Id, cursoId, aulaId, inicio, termino: DateTime.UtcNow.AddDays(-1));
+        var hNovo = NovoHistorico(matricula.Id, cursoId, aulaId, inicio, termino: DateTime.Now.AddDays(-1));
 
         await _repo.AtualizarEstadoHistoricoAprendizadoAsync(antigo, hNovo); // usa _context.AtualizarEstadoValueObject(...) :contentReference[oaicite:11]{index=11}
         await _repo.UnitOfWork.Commit();

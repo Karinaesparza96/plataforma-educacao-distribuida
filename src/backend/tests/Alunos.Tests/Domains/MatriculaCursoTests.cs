@@ -16,7 +16,7 @@ public class MatriculaCursoTests
         m.CursoId.Should().NotBeEmpty();
         m.NomeCurso.Should().Be("Curso Completo de DDD");
         m.Valor.Should().Be(1000.50m);
-        m.DataMatricula.Date.Should().Be(DateTime.UtcNow.Date); // tolerante a horário
+        m.DataMatricula.Date.Should().Be(DateTime.Now.Date); // tolerante a horário
         m.EstadoMatricula.Should().Be(EstadoMatriculaCurso.PendentePagamento);
         m.MatriculaCursoConcluido().Should().BeFalse();
         m.PagamentoPodeSerRealizado().Should().BeTrue();
@@ -186,7 +186,7 @@ public class MatriculaCursoTests
 
         m.RegistrarHistoricoAprendizado(aulaId, "Aula 1", 5);
         // concluir aula
-        m.RegistrarHistoricoAprendizado(aulaId, "Aula 1", 5, DateTime.UtcNow);
+        m.RegistrarHistoricoAprendizado(aulaId, "Aula 1", 5, DateTime.Now);
 
         Action act = () => m.RegistrarHistoricoAprendizado(aulaId, "Aula 1", 5);
 
@@ -202,7 +202,7 @@ public class MatriculaCursoTests
         var aula2 = Guid.NewGuid();
 
         m.RegistrarHistoricoAprendizado(aula1, "Aula 1", 5); // em andamento
-        m.RegistrarHistoricoAprendizado(aula2, "Aula 2", 7, DateTime.UtcNow); // finalizada
+        m.RegistrarHistoricoAprendizado(aula2, "Aula 2", 7, DateTime.Now); // finalizada
 
         m.QuantidadeAulasEmAndamento().Should().Be(1);
         m.QuantidadeAulasFinalizadas().Should().Be(1);
@@ -226,7 +226,7 @@ public class MatriculaCursoTests
     public void Deve_concluir_curso_quando_todas_aulas_finalizadas()
     {
         var m = new MatriculaCursoBuilder().BuildPago();
-        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.UtcNow);
+        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.Now);
 
         m.Invoking(x => x.ConcluirCurso()).Should().NotThrow();
 
@@ -240,7 +240,7 @@ public class MatriculaCursoTests
     public void Nao_deve_concluir_duas_vezes()
     {
         var m = new MatriculaCursoBuilder().BuildPago();
-        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.UtcNow);
+        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.Now);
         m.ConcluirCurso();
 
         m.Invoking(x => x.ConcluirCurso())
@@ -253,7 +253,7 @@ public class MatriculaCursoTests
     public void Deve_falhar_solicitar_certificado_antes_de_concluir()
     {
         var m = new MatriculaCursoBuilder().BuildPago();
-        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.UtcNow);
+        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.Now);
 
         m.Invoking(x => x.RequisitarCertificadoConclusao(8m, "certs/1.pdf", "Instrutor"))
          .Should().Throw<DomainException>()
@@ -264,7 +264,7 @@ public class MatriculaCursoTests
     public void Deve_solicitar_certificado_apos_concluir_e_bloquear_nova_solicitacao()
     {
         var m = new MatriculaCursoBuilder().BuildPago();
-        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.UtcNow);
+        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.Now);
         m.ConcluirCurso();
 
         m.Invoking(x => x.RequisitarCertificadoConclusao(9m, "certs/ok.pdf", "Instrutor"))
@@ -291,7 +291,7 @@ public class MatriculaCursoTests
          .WithMessage("*Certificado não foi solicitado para esta matrícula*");
 
         // Com certificado
-        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.UtcNow);
+        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 5, DateTime.Now);
         m.ConcluirCurso();
         m.RequisitarCertificadoConclusao(8m, "certs/ok.pdf", "Instrutor");
 
@@ -350,7 +350,7 @@ public class MatriculaCursoTests
     public void ToString_deve_mostrar_concluido_sim_quando_finalizado()
     {
         var m = new MatriculaCursoBuilder().BuildPago();
-        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 3, DateTime.UtcNow);
+        m.RegistrarHistoricoAprendizado(Guid.NewGuid(), "Aula 1", 3, DateTime.Now);
         m.ConcluirCurso();
 
         m.ToString().Should().Contain("Concluído? Sim");

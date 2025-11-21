@@ -17,7 +17,7 @@ public class RegistrarHistoricoAprendizadoCommandValidatorTests
     [Fact]
     public void Deve_ser_valido_quando_campos_ok()
     {
-        var cmd = new RegistrarHistoricoAprendizadoCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "A1", 10, DateTime.UtcNow);
+        var cmd = new RegistrarHistoricoAprendizadoCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "A1", 10, DateTime.Now);
         new RegistrarHistoricoAprendizadoCommandValidator().Validate(cmd).IsValid.Should().BeTrue();
     }
 }

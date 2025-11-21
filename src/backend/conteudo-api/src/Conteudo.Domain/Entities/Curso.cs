@@ -121,6 +121,6 @@ public class Curso : Entidade, IRaizAgregacao
 
     public bool TemVagasDisponiveis => VagasOcupadas < VagasMaximas;
     public int VagasDisponiveis => VagasMaximas - VagasOcupadas;
-    public bool EstaExpirado => ValidoAte.HasValue && ValidoAte.Value < DateTime.UtcNow;
+    public bool EstaExpirado => ValidoAte.HasValue && ValidoAte.Value < DateTime.Now;
     public bool PodeSerMatriculado => Ativo && !EstaExpirado && TemVagasDisponiveis;
 }

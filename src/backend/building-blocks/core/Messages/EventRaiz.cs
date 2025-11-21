@@ -12,7 +12,7 @@ public class EventRaiz : INotification
 
     protected EventRaiz()
     {
-        DataHora = DateTime.UtcNow;
+        DataHora = DateTime.Now;
     }
 
     public void DefinirRaizAgregacao(Guid raizAgregacao)
