@@ -18,17 +18,50 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      - name: Restaurar dependências
-        run: dotnet restore
+      # ---------------------------
+      # RESTORE + BUILD APIs
+      # ---------------------------
 
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Testes (todas as .csproj de testes)
+      - name: Restaurar e Build Conteudo.API
         run: |
-          TEST_PROJECTS=$(find . -path "*/tests/*" -name "*.csproj")
-          for proj in $TEST_PROJECTS; do
-            echo "Executando testes em: $proj"
+          dotnet restore src/backend/conteudo-api/Conteudo.API.sln
+          dotnet build src/backend/conteudo-api/Conteudo.API.sln --configuration Release --no-restore
+
+      - name: Restaurar e Build Auth.API
+        run: |
+          dotnet restore src/backend/auth-api/Auth.API.sln
+          dotnet build src/backend/auth-api/Auth.API.sln --configuration Release --no-restore
+
+      - name: Restaurar e Build Alunos.API
+        run: |
+          dotnet restore src/backend/alunos-api/Alunos.API.sln
+          dotnet build src/backend/alunos-api/Alunos.API.sln --configuration Release --no-restore
+
+      - name: Restaurar e Build Pagamentos.API
+        run: |
+          dotnet restore src/backend/pagamentos-api/Pagamentos.API.sln
+          dotnet build src/backend/pagamentos-api/Pagamentos.API.sln --configuration Release --no-restore
+
+      - name: Restaurar e Build BFF.API
+        run: |
+          dotnet restore src/backend/bff-api/BFF.API.sln
+          dotnet build src/backend/bff-api/BFF.API.sln --configuration Release --no-restore
+
+      # ---------------------------
+      # TESTES
+      # ---------------------------
+      - name: Restaurar + Build Testes
+        run: |
+          for proj in $(find src/backend/tests -name "*.csproj"); do
+            echo "Restaurando e buildando: $proj"
+            dotnet restore "$proj"
+            dotnet build "$proj" --configuration Release --no-restore
+          done
+
+      - name: Executar Testes
+        run: |
+          for proj in $(find src/backend/tests -name "*.csproj"); do
+            echo "Testando: $proj"
             dotnet test "$proj" --configuration Release --no-build --logger "trx"
           done
 
@@ -37,3 +70,19 @@ jobs:
         with:
           name: test-results
           path: "**/TestResults/*.trx"
+
+      # ---------------------------
+      # FRONTEND
+      # ---------------------------
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Instalar dependências do Frontend
+        working-directory: src/frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: src/frontend
+        run: npm run build
