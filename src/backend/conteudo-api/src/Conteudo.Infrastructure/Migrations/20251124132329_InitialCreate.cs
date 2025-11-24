@@ -1,13 +1,12 @@
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
-namespace Conteudo.Infrastructure.Migrations.Sqlite
+namespace Conteudo.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    [ExcludeFromCodeCoverage]
-    public partial class InitialSqlite : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,12 +16,12 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                 columns: table => new
                 {
                     CategoriaId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
-                    Nome = table.Column<string>(type: "Varchar", maxLength: 100, nullable: false),
-                    Descricao = table.Column<string>(type: "Varchar", maxLength: 0, nullable: false),
-                    Cor = table.Column<string>(type: "Varchar", maxLength: 100, nullable: false),
-                    IconeUrl = table.Column<string>(type: "Varchar", maxLength: 500, nullable: true),
-                    IsAtiva = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Ordem = table.Column<int>(type: "INTEGER", nullable: false),
+                    Nome = table.Column<string>(type: "Varchar(100)", maxLength: 100, nullable: false),
+                    Descricao = table.Column<string>(type: "Varchar(500)", maxLength: 500, nullable: false),
+                    Cor = table.Column<string>(type: "Varchar(100)", maxLength: 100, nullable: false),
+                    IconeUrl = table.Column<string>(type: "Varchar(500)", maxLength: 500, nullable: true),
+                    IsAtiva = table.Column<bool>(type: "bit", nullable: false),
+                    Ordem = table.Column<int>(type: "int", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "DateTime", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "DateTime", nullable: true)
                 },
@@ -36,26 +35,26 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                 columns: table => new
                 {
                     CursoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
-                    Nome = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
+                    Nome = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
                     Valor = table.Column<decimal>(type: "Money", precision: 10, scale: 2, nullable: false),
-                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ValidoAte = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    ConteudoProgramatico_Resumo = table.Column<string>(type: "Varchar", maxLength: 250, nullable: true),
-                    ConteudoProgramatico_Descricao = table.Column<string>(type: "Varchar", maxLength: 500, nullable: true),
-                    ConteudoProgramatico_Objetivos = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: true),
-                    ConteudoProgramatico_PreRequisitos = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: true),
-                    ConteudoProgramatico_PublicoAlvo = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: true),
-                    ConteudoProgramatico_Metodologia = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: true),
-                    ConteudoProgramatico_Recursos = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: true),
-                    ConteudoProgramatico_Avaliacao = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: true),
-                    ConteudoProgramatico_Bibliografia = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: true),
+                    Ativo = table.Column<bool>(type: "bit", nullable: false),
+                    ValidoAte = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ConteudoProgramatico_Resumo = table.Column<string>(type: "Varchar(250)", maxLength: 250, nullable: true),
+                    ConteudoProgramatico_Descricao = table.Column<string>(type: "Varchar(500)", maxLength: 500, nullable: true),
+                    ConteudoProgramatico_Objetivos = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: true),
+                    ConteudoProgramatico_PreRequisitos = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: true),
+                    ConteudoProgramatico_PublicoAlvo = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: true),
+                    ConteudoProgramatico_Metodologia = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: true),
+                    ConteudoProgramatico_Recursos = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: true),
+                    ConteudoProgramatico_Avaliacao = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: true),
+                    ConteudoProgramatico_Bibliografia = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: true),
                     CategoriaId = table.Column<Guid>(type: "UniqueIdentifier", nullable: true),
-                    DuracaoHoras = table.Column<int>(type: "INTEGER", nullable: false),
-                    Nivel = table.Column<string>(type: "Varchar", maxLength: 50, nullable: false),
-                    ImagemUrl = table.Column<string>(type: "Varchar", maxLength: 500, nullable: true),
-                    Instrutor = table.Column<string>(type: "Varchar", maxLength: 100, nullable: false),
-                    VagasMaximas = table.Column<int>(type: "INTEGER", nullable: false),
-                    VagasOcupadas = table.Column<int>(type: "INTEGER", nullable: false),
+                    DuracaoHoras = table.Column<int>(type: "int", nullable: false),
+                    Nivel = table.Column<string>(type: "Varchar(50)", maxLength: 50, nullable: false),
+                    ImagemUrl = table.Column<string>(type: "Varchar(500)", maxLength: 500, nullable: true),
+                    Instrutor = table.Column<string>(type: "Varchar(100)", maxLength: 100, nullable: false),
+                    VagasMaximas = table.Column<int>(type: "int", nullable: false),
+                    VagasOcupadas = table.Column<int>(type: "int", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "DateTime", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "DateTime", nullable: true)
                 },
@@ -76,16 +75,16 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                 {
                     AulaId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
                     CursoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
-                    Nome = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    Descricao = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: false),
-                    Numero = table.Column<int>(type: "INTEGER", nullable: false),
-                    DuracaoMinutos = table.Column<int>(type: "INTEGER", nullable: false),
-                    VideoUrl = table.Column<string>(type: "Varchar", maxLength: 500, nullable: false),
-                    TipoAula = table.Column<string>(type: "Varchar", maxLength: 50, nullable: false),
-                    IsObrigatoria = table.Column<bool>(type: "INTEGER", nullable: false),
-                    IsPublicada = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DataPublicacao = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Observacoes = table.Column<string>(type: "Varchar", maxLength: 1000, nullable: true),
+                    Nome = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    Descricao = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: false),
+                    Numero = table.Column<int>(type: "int", nullable: false),
+                    DuracaoMinutos = table.Column<int>(type: "int", nullable: false),
+                    VideoUrl = table.Column<string>(type: "Varchar(500)", maxLength: 500, nullable: false),
+                    TipoAula = table.Column<string>(type: "Varchar(50)", maxLength: 50, nullable: false),
+                    IsObrigatoria = table.Column<bool>(type: "bit", nullable: false),
+                    IsPublicada = table.Column<bool>(type: "bit", nullable: false),
+                    DataPublicacao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Observacoes = table.Column<string>(type: "Varchar(1000)", maxLength: 1000, nullable: true),
                     DataCriacao = table.Column<DateTime>(type: "DateTime", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "DateTime", nullable: true)
                 },
@@ -106,15 +105,15 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                 {
                     MaterialId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
                     AulaId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
-                    Nome = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    Descricao = table.Column<string>(type: "Varchar", maxLength: 0, nullable: false),
-                    TipoMaterial = table.Column<string>(type: "Varchar", maxLength: 50, nullable: false),
-                    Url = table.Column<string>(type: "Varchar", maxLength: 500, nullable: false),
-                    IsObrigatorio = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TamanhoBytes = table.Column<long>(type: "INTEGER", nullable: false),
-                    Extensao = table.Column<string>(type: "Varchar", maxLength: 10, nullable: true),
-                    Ordem = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsAtivo = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Nome = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    Descricao = table.Column<string>(type: "Varchar(500)", maxLength: 500, nullable: false),
+                    TipoMaterial = table.Column<string>(type: "Varchar(50)", maxLength: 50, nullable: false),
+                    Url = table.Column<string>(type: "Varchar(500)", maxLength: 500, nullable: false),
+                    IsObrigatorio = table.Column<bool>(type: "bit", nullable: false),
+                    TamanhoBytes = table.Column<long>(type: "bigint", nullable: false),
+                    Extensao = table.Column<string>(type: "Varchar(10)", maxLength: 10, nullable: true),
+                    Ordem = table.Column<int>(type: "int", nullable: false),
+                    IsAtivo = table.Column<bool>(type: "bit", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "DateTime", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "DateTime", nullable: true)
                 },

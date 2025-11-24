@@ -16,10 +16,10 @@ services:
     networks:
       - plataforma-network
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -32,9 +32,9 @@ services:
       - plataforma-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -50,10 +50,10 @@ services:
     networks:
       - plataforma-network
     healthcheck:
-      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P PlataformaEducacional123! -C -Q "SELECT 1"
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: [ "CMD", "bash", "-c", "echo 'SELECT 1' | /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P PlataformaEducacional123!" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   # Microserviços
   auth-api:
@@ -78,15 +78,17 @@ services:
       - RabbitMQ__Username=admin
       - RabbitMQ__Password=admin123
     depends_on:
-      - sqlserver
-      - rabbitmq
+      sqlserver:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - plataforma-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   conteudo-api:
     build:
@@ -99,7 +101,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5002;http://+:7002
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=PlataformaEducacional123!
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ConteudoDB;User Id=sa;Password=PlataformaEducacional123!;TrustServerCertificate=True;
       - JwtSettings__SecretKey=PlataformaEducacional123!SuperSecretKey2024@#$
       - JwtSettings__Issuer=PlataformaEducacional
@@ -119,9 +120,9 @@ services:
       - plataforma-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7002/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   alunos-api:
     build:
@@ -134,7 +135,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5003;http://+:7003
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=PlataformaEducacional123!
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AlunosDB;User Id=sa;Password=PlataformaEducacional123!;TrustServerCertificate=True;
       - JwtSettings__SecretKey=PlataformaEducacional123!SuperSecretKey2024@#$
       - JwtSettings__Issuer=PlataformaEducacional
@@ -155,9 +155,9 @@ services:
       - plataforma-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   pagamentos-api:
     build:
@@ -170,7 +170,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5004;http://+:7004
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=PlataformaEducacional123!
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=PagamentosDB;User Id=sa;Password=PlataformaEducacional123!;TrustServerCertificate=True;
       - JwtSettings__SecretKey=PlataformaEducacional123!SuperSecretKey2024@#$
       - JwtSettings__Issuer=PlataformaEducacional
@@ -190,14 +189,14 @@ services:
       - plataforma-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5004/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   bff-api:
     build:
-        context: ./src/backend
-        dockerfile: bff-api/Dockerfile
+      context: ./src/backend
+      dockerfile: bff-api/Dockerfile
     container_name: plataforma-bff-api
     ports:
       - "5000:5000"
@@ -205,9 +204,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5000;http://+:7000
-      - JwtSettings__SecretKey=PlataformaEducacional123!SuperSecretKey2024@#$
-      - JwtSettings__Issuer=PlataformaEducacional
-      - JwtSettings__Audience=PlataformaEducacional
       - RedisSettings__ConnectionString=redis:6379
       - ApiSettings__AuthApiUrl=http://auth-api:5001
       - ApiSettings__ConteudoApiUrl=http://conteudo-api:5002
@@ -228,9 +224,9 @@ services:
       - plataforma-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     build:
@@ -240,7 +236,8 @@ services:
     ports:
       - "4200:80"
     environment:
-      - API_URL=http://localhost:5000
+    - API_URL=http://bff-api:5000
+
     depends_on:
       bff-api:
         condition: service_healthy
@@ -254,4 +251,4 @@ networks:
 volumes:
   rabbitmq_data:
   redis_data:
-  sqlserver_data: 
+  sqlserver_data:

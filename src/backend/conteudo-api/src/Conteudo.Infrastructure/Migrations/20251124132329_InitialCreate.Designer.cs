@@ -3,22 +3,27 @@ using System;
 using Conteudo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Conteudo.Infrastructure.Migrations.Sqlite
+namespace Conteudo.Infrastructure.Migrations
 {
     [DbContext(typeof(ConteudoDbContext))]
-    [Migration("20250815205856_InitialSqlite")]
-    partial class InitialSqlite
+    [Migration("20251124132329_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.8")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Conteudo.Domain.Entities.Aula", b =>
                 {
@@ -35,7 +40,7 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnType("UniqueIdentifier");
 
                     b.Property<DateTime?>("DataPublicacao")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -44,13 +49,13 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnName("Descricao");
 
                     b.Property<int>("DuracaoMinutos")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsObrigatoria")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsPublicada")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -59,7 +64,7 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnName("Nome");
 
                     b.Property<int>("Numero")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("Observacoes")
                         .HasMaxLength(1000)
@@ -120,7 +125,7 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasMaxLength(0)
+                        .HasMaxLength(500)
                         .HasColumnType("Varchar")
                         .HasColumnName("Descricao");
 
@@ -130,7 +135,7 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnName("IconeUrl");
 
                     b.Property<bool>("IsAtiva")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -139,7 +144,7 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnName("Nome");
 
                     b.Property<int>("Ordem")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("DateTime")
@@ -169,7 +174,7 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnName("CursoId");
 
                     b.Property<bool>("Ativo")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("CategoriaId")
                         .HasColumnType("UniqueIdentifier");
@@ -179,7 +184,7 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnName("DataCriacao");
 
                     b.Property<int>("DuracaoHoras")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("ImagemUrl")
                         .HasMaxLength(500)
@@ -209,13 +214,13 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnName("DataAlteracao");
 
                     b.Property<int>("VagasMaximas")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("VagasOcupadas")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ValidoAte")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("Valor")
                         .HasPrecision(10, 2)
@@ -254,7 +259,7 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasMaxLength(0)
+                        .HasMaxLength(500)
                         .HasColumnType("Varchar")
                         .HasColumnName("Descricao");
 
@@ -264,10 +269,10 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnName("Extensao");
 
                     b.Property<bool>("IsAtivo")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsObrigatorio")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -276,10 +281,10 @@ namespace Conteudo.Infrastructure.Migrations.Sqlite
                         .HasColumnName("Nome");
 
                     b.Property<int>("Ordem")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<long>("TamanhoBytes")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("TipoMaterial")
                         .IsRequired()

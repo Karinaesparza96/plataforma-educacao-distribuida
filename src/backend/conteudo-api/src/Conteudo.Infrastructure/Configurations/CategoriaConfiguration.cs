@@ -30,6 +30,7 @@ public class CategoriaConfiguration : IEntityTypeConfiguration<Categoria>
         entity.Property(c => c.Descricao)
             .HasColumnName("Descricao")
             .HasColumnType(DatabaseTypeConstant.Varchar)
+            .HasMaxLength(500)
             .IsRequired();
 
         entity.Property(c => c.Cor)
