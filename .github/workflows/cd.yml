@@ -51,7 +51,9 @@ jobs:
             IMAGE="${IMAGE_PREFIX}-${NAME}"
             echo "Buildando imagem: $IMAGE"
 
-            docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" "$SERVICE"
+            docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
+              -f "$SERVICE/Dockerfile" \
+              .
 
             docker push "$DOCKERHUB_USERNAME/$IMAGE:latest"
 
