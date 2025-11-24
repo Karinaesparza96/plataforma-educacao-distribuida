@@ -1,0 +1,88 @@
+name: CI - Build & Test
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+  pull_request:
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # ---------------------------
+      # RESTORE + BUILD APIs
+      # ---------------------------
+
+      - name: Restaurar e Build Conteudo.API
+        run: |
+          dotnet restore src/backend/conteudo-api/Conteudo.API.sln
+          dotnet build src/backend/conteudo-api/Conteudo.API.sln --configuration Release --no-restore
+
+      - name: Restaurar e Build Auth.API
+        run: |
+          dotnet restore src/backend/auth-api/Auth.API.sln
+          dotnet build src/backend/auth-api/Auth.API.sln --configuration Release --no-restore
+
+      - name: Restaurar e Build Alunos.API
+        run: |
+          dotnet restore src/backend/alunos-api/Alunos.API.sln
+          dotnet build src/backend/alunos-api/Alunos.API.sln --configuration Release --no-restore
+
+      - name: Restaurar e Build Pagamentos.API
+        run: |
+          dotnet restore src/backend/pagamentos-api/Pagamentos.API.sln
+          dotnet build src/backend/pagamentos-api/Pagamentos.API.sln --configuration Release --no-restore
+
+      - name: Restaurar e Build BFF.API
+        run: |
+          dotnet restore src/backend/bff-api/BFF.API.sln
+          dotnet build src/backend/bff-api/BFF.API.sln --configuration Release --no-restore
+
+      # ---------------------------
+      # TESTES
+      # ---------------------------
+      - name: Restaurar + Build Testes
+        run: |
+          for proj in $(find src/backend/tests -name "*.csproj"); do
+            echo "Restaurando e buildando: $proj"
+            dotnet restore "$proj"
+            dotnet build "$proj" --configuration Release --no-restore
+          done
+
+      - name: Executar Testes
+        run: |
+          for proj in $(find src/backend/tests -name "*.csproj"); do
+            echo "Testando: $proj"
+            dotnet test "$proj" --configuration Release --no-build --logger "trx"
+          done
+
+      - name: Publicar resultados dos testes
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: "**/TestResults/*.trx"
+
+      # ---------------------------
+      # FRONTEND
+      # ---------------------------
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Instalar dependências do Frontend
+        working-directory: src/frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: src/frontend
+        run: npm run build

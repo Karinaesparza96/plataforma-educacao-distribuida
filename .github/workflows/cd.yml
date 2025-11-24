@@ -1,0 +1,60 @@
+name: CD - Docker Build & Push
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    env:
+      REGISTRY: docker.io
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      IMAGE_PREFIX: plataformaedu
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_PASSWORD }}
+
+      - name: Encontrar serviços com Dockerfile
+        id: services
+        run: |
+          SERVICES=$(find src/backend -maxdepth 3 -name "Dockerfile" | sed 's/\/Dockerfile//')
+          echo "services<<EOF" >> $GITHUB_OUTPUT
+          echo "$SERVICES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Build & Push das imagens
+        run: |
+          while IFS= read -r SERVICE; do
+            NAME=$(basename "$SERVICE")
+            IMAGE="${IMAGE_PREFIX}-${NAME}"
+            echo "Buildando imagem: $IMAGE"
+
+            docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" "$SERVICE"
+
+            docker push "$DOCKERHUB_USERNAME/$IMAGE:latest"
+
+            docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
+            docker push "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
+          done <<< "${{ steps.services.outputs.services }}"

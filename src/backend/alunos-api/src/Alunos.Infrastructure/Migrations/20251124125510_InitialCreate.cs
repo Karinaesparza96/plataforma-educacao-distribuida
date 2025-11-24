@@ -1,13 +1,12 @@
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
-namespace Alunos.Infrastructure.Migrations.Sqlite
+namespace Alunos.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    [ExcludeFromCodeCoverage]
-    public partial class InitialSqlite : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,17 +17,17 @@ namespace Alunos.Infrastructure.Migrations.Sqlite
                 {
                     AlunoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
                     CodigoUsuarioAutenticacao = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
-                    Nome = table.Column<string>(type: "Varchar", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "Varchar", maxLength: 100, nullable: false),
-                    Cpf = table.Column<string>(type: "Varchar", maxLength: 11, nullable: true),
+                    Nome = table.Column<string>(type: "Varchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "Varchar(100)", maxLength: 100, nullable: false),
+                    Cpf = table.Column<string>(type: "Varchar(11)", maxLength: 11, nullable: true),
                     DataNascimento = table.Column<DateTime>(type: "SmallDateTime", nullable: false),
-                    Telefone = table.Column<string>(type: "Varchar", maxLength: 25, nullable: true),
+                    Telefone = table.Column<string>(type: "Varchar(25)", maxLength: 25, nullable: true),
                     Ativo = table.Column<bool>(type: "Bit", nullable: false),
-                    Genero = table.Column<string>(type: "Varchar", maxLength: 20, nullable: false),
-                    Cidade = table.Column<string>(type: "Varchar", maxLength: 50, nullable: false),
-                    Estado = table.Column<string>(type: "Varchar", maxLength: 2, nullable: true),
-                    Cep = table.Column<string>(type: "Varchar", maxLength: 8, nullable: false),
-                    Foto = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: true),
+                    Genero = table.Column<string>(type: "Varchar(20)", maxLength: 20, nullable: false),
+                    Cidade = table.Column<string>(type: "Varchar(50)", maxLength: 50, nullable: false),
+                    Estado = table.Column<string>(type: "Varchar(2)", maxLength: 2, nullable: true),
+                    Cep = table.Column<string>(type: "Varchar(8)", maxLength: 8, nullable: false),
+                    Foto = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: true),
                     DataCriacao = table.Column<DateTime>(type: "DateTime", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "DateTime", nullable: true)
                 },
@@ -44,12 +43,12 @@ namespace Alunos.Infrastructure.Migrations.Sqlite
                     MatriculaCursoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
                     AlunoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
                     CursoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
-                    NomeCurso = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
+                    NomeCurso = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
                     Valor = table.Column<decimal>(type: "Money", precision: 10, scale: 2, nullable: false),
                     DataMatricula = table.Column<DateTime>(type: "SmallDateTime", nullable: false),
                     DataConclusao = table.Column<DateTime>(type: "SmallDateTime", nullable: true),
-                    EstadoMatricula = table.Column<int>(type: "TinyInt", nullable: false),
-                    Observacao = table.Column<string>(type: "Varchar", maxLength: 2000, nullable: true),
+                    EstadoMatricula = table.Column<byte>(type: "TinyInt", nullable: false),
+                    Observacao = table.Column<string>(type: "Varchar(2000)", maxLength: 2000, nullable: true),
                     DataCriacao = table.Column<DateTime>(type: "DateTime", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "DateTime", nullable: true)
                 },
@@ -70,13 +69,13 @@ namespace Alunos.Infrastructure.Migrations.Sqlite
                 {
                     CertificadoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
                     MatriculaCursoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
-                    NomeCurso = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
+                    NomeCurso = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
                     DataSolicitacao = table.Column<DateTime>(type: "SmallDateTime", nullable: false),
                     DataEmissao = table.Column<DateTime>(type: "SmallDateTime", nullable: true),
                     CargaHoraria = table.Column<short>(type: "SmallInt", nullable: false),
-                    NotaFinal = table.Column<decimal>(type: "TinyInt", nullable: false),
-                    PathCertificado = table.Column<string>(type: "Varchar", maxLength: 1024, nullable: false),
-                    NomeInstrutor = table.Column<string>(type: "Varchar", maxLength: 100, nullable: false),
+                    NotaFinal = table.Column<byte>(type: "TinyInt", nullable: false),
+                    PathCertificado = table.Column<string>(type: "Varchar(1024)", maxLength: 1024, nullable: false),
+                    NomeInstrutor = table.Column<string>(type: "Varchar(100)", maxLength: 100, nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "DateTime", nullable: false),
                     DataAlteracao = table.Column<DateTime>(type: "DateTime", nullable: true)
                 },
@@ -99,7 +98,7 @@ namespace Alunos.Infrastructure.Migrations.Sqlite
                     MatriculaCursoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
                     CursoId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
                     AulaId = table.Column<Guid>(type: "UniqueIdentifier", nullable: false),
-                    NomeAula = table.Column<string>(type: "Varchar", maxLength: 100, nullable: false),
+                    NomeAula = table.Column<string>(type: "Varchar(100)", maxLength: 100, nullable: false),
                     CargaHoraria = table.Column<int>(type: "Int", nullable: false),
                     DataInicio = table.Column<DateTime>(type: "SmallDateTime", nullable: false),
                     DataTermino = table.Column<DateTime>(type: "SmallDateTime", nullable: true)

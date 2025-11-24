@@ -30,6 +30,7 @@ public class MaterialConfiguration : IEntityTypeConfiguration<Material>
         entity.Property(m => m.Descricao)
             .HasColumnName("Descricao")
             .HasColumnType(DatabaseTypeConstant.Varchar)
+            .HasMaxLength(500)
             .IsRequired();
 
         entity.Property(m => m.TipoMaterial)
