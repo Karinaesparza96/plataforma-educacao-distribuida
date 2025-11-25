@@ -19,14 +19,13 @@ Uma plataforma educacional moderna baseada em arquitetura de **microserviços**,
 
 - [Arquitetura do Sistema](#️-arquitetura-do-sistema)
 - [Pré-requisitos](#-pré-requisitos)
-- [Execução Rápida com Docker Compose](#-execução-rápida-com-docker-compose)
+- [Execução Rápida com Docker Compose](#execução-rápida-com-docker-compose)
 - [Microserviços](#-microserviços)
 - [Infraestrutura](#%EF%B8%8F-infraestrutura)
 - [URLs de Acesso](#-urls-de-acesso)
 - [Desenvolvimento](#%EF%B8%8F-desenvolvimento)
 - [Testes](#-testes)
 - [Building Blocks](#-building-blocks)
-- [Script](#-scripts)
 - [Usuários de Exemplo](#-usuários-de-exemplo)
 - [Monitoramento](#-monitoramento)
 - [Solução de Problemas](#-solução-de-problemas)
@@ -208,7 +207,7 @@ node --version
 npm --version
 ```
 
-## ⚡  Execução Rápida com Docker Compose
+##  Execução Rápida com Docker Compose
 
 ### 1. Clonar o Repositório
 ```bash
@@ -297,13 +296,13 @@ Após ~5 minutos de inicialização:
 ## 🌐 URLs de Acesso
 
 ### Aplicação
-| Serviço | URL | Descrição |
+| Serviço | URL | Deção |
 |---------|-----|-----------|
 | 📱 **Frontend** | http://localhost:4200 | Interface do usuário |
 | 🔗 **BFF API** | http://localhost:5000 | Gateway para frontend |
 
 ### APIs (Swagger)
-| API | HTTP | Descrição |
+| API | HTTP | Deção |
 |-----|-------|------|-----------|
 | 🔐 **Auth** | http://localhost:5001 | Autenticação |
 | 📚 **Conteudo** | http://localhost:5002 | Cursos e aulas |
@@ -445,10 +444,6 @@ docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
 
 ### Parar Sistema
 ```powershell
-# Parar todos os serviços
-.\scripts\stop-all.ps1
-
-# Ou usando docker-compose
 docker-compose down
 ```
 
@@ -480,7 +475,7 @@ docker-compose down
 docker container prune -f
 
 # Reiniciar
-./scripts/start-all.sh
+docker-compose up
 ```
 
 ### Problema: Erro de conexão com banco
@@ -514,9 +509,6 @@ docker-compose up -d frontend
 ```bash
 # Verificar RabbitMQ
 docker-compose logs rabbitmq
-
-# Reconfigurar filas
-./scripts/setup-rabbitmq.sh
 
 # Reiniciar serviços que usam RabbitMQ
 docker-compose restart auth-api alunos-api pagamentos-api
@@ -611,7 +603,6 @@ mba.modulo4/
 │       │   └── Tests/               # Core.Tests.csproj
 │       └── MessageBus/              # MessageBus.csproj - Comunicação assíncrona
 ├── src/frontend/                    # Angular 18 SPA
-├── scripts/                         # Scripts de automação PowerShell
 ├── infra/                           # (separar configs de infraestrutura, se aplicável)
 ├── docs/                            # Documentação extra
 ├── docker/                          # Configurações Docker
