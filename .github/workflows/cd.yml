@@ -51,7 +51,7 @@ jobs:
             IMAGE="${IMAGE_PREFIX}-${NAME}"
             echo "Buildando imagem: $IMAGE"
 
-            CONTEXT_DIR="src/backend"
+            CONTEXT_DIR="$SERVICE"
 
             docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
               -f "$SERVICE/Dockerfile" \
