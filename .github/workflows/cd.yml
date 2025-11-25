@@ -50,12 +50,12 @@ jobs:
             NAME=$(basename "$SERVICE")
             IMAGE="${IMAGE_PREFIX}-${NAME}"
             echo "Buildando imagem: $IMAGE"
-
-            CONTEXT_DIR="$SERVICE"
+            CONTEXT_DIR="src/backend"
 
             docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
               -f "$SERVICE/Dockerfile" \
               "$CONTEXT_DIR"
+
             docker push "$DOCKERHUB_USERNAME/$IMAGE:latest"
 
             docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
