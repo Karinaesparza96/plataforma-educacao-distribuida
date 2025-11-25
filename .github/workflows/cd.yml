@@ -7,8 +7,6 @@ on:
       - completed
     branches:
       - main
-      - develop
-      - feature/*
 
 jobs:
   docker:
@@ -56,6 +54,7 @@ jobs:
             NAME=$(basename "$SERVICE")
             IMAGE="${IMAGE_PREFIX}-${NAME}"
             echo "Buildando imagem: $IMAGE"
+
             CONTEXT_DIR="src/backend"
 
             docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
