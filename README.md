@@ -1,10 +1,11 @@
-# 🎓 Plataforma Educacional Distribuída
+# 🎓 Plataforma Educacional Distribuída com DevOps Completo
 
-Uma plataforma educacional moderna baseada em arquitetura de **microserviços**, desenvolvida com **.NET 9**, **Angular 18**, **RabbitMQ**, **SQL Server** e **Redis**, totalmente containerizada com **Docker**.
+Uma plataforma educacional moderna baseada em arquitetura de **microserviços**, desenvolvida com **.NET 9**, **Angular 18**, **RabbitMQ**, **SQL Server** e **Redis**. Este projeto evolui para um **ecossistema DevOps completo** com automação de build, testes, entrega contínua (CI/CD) e orquestração em **Kubernetes**.
 
 ![.NET](https://img.shields.io/badge/.NET-9.0-blue)
 ![Angular](https://img.shields.io/badge/Angular-18-red)
-![Docker](https://img.shields.io/badge/Docker-Compose-blue)
+![Kubernetes](https://img.shields.io/badge/Orquestração-Kubernetes-blueviolet)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-lightgrey)
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3-orange)
 
 ### Integrantes
@@ -18,7 +19,7 @@ Uma plataforma educacional moderna baseada em arquitetura de **microserviços**,
 
 - [Arquitetura do Sistema](#️-arquitetura-do-sistema)
 - [Pré-requisitos](#-pré-requisitos)
-- [Execução Rápida](#-execução-rápida)
+- [Execução Rápida com Docker Compose](#-execução-rápida-com-docker-compose)
 - [Microserviços](#-microserviços)
 - [Infraestrutura](#%EF%B8%8F-infraestrutura)
 - [URLs de Acesso](#-urls-de-acesso)
@@ -128,13 +129,23 @@ flowchart TD
 
 ### Princípios Arquiteturais
 
-- ✅ **Database per Service**: Cada microserviço tem seu próprio banco
-- ✅ **Event-Driven Architecture**: Comunicação assíncrona via RabbitMQ
-- ✅ **API Gateway Pattern**: BFF centraliza comunicação com frontend
-- ✅ **Circuit Breaker**: Resiliência com Polly
-- ✅ **Health Checks**: Monitoramento de saúde dos serviços
-- ✅ **JWT Authentication**: Autenticação centralizada
-- ✅ **Clean Architecture**: DDD, SOLID, CQRS
+✅ Database per Service: Cada microserviço tem seu próprio banco.
+
+✅ Event-Driven Architecture: Comunicação assíncrona via RabbitMQ.
+
+✅ API Gateway Pattern: BFF centraliza comunicação com frontend e aplica políticas de resiliência.
+
+✅ Circuit Breaker & Retry: Implementado via Polly no BFF para chamadas downstream.
+
+✅ Health Checks Nativos: Endpoints /health e /ready para Kubernetes Probes.
+
+✅ Containerização: Todos os serviços são distribuídos via Docker.
+
+✅ Orquestração: Deployment e escalabilidade gerenciados por Kubernetes.
+
+✅ JWT Authentication: Autenticação centralizada.
+
+✅ Clean Architecture: DDD, SOLID, CQRS.
 
 ### Estrutura Clean Architecture por Microserviço
 
@@ -165,17 +176,8 @@ Cada microserviço segue a **Clean Architecture** com as seguintes camadas:
 - Integração com RabbitMQ
 - Configurações de banco de dados
 
-## 🤔 Por que Scripts Auxiliares?
-
-### ✅ **Scripts PowerShell**
-- ✅ Ordem correta de inicialização 
-- ✅ Verificações de saúde dos Serviços
-- ✅ Mensagens informativas
-- ✅ Tratamento de erros
-
 ### 📋 **Opções Disponíveis**
-1. **PowerShell (.ps1)** - Automação completa
-2. **Docker Compose puro**
+1. **Docker Compose**
 
 ## 🚀 Pré-requisitos
 
@@ -206,52 +208,20 @@ node --version
 npm --version
 ```
 
-## ⚡ Execução Rápida
+## ⚡  Execução Rápida com Docker Compose
 
 ### 1. Clonar o Repositório
 ```bash
-git clone https://github.com/jasonamaral/mba.modulo4.git
+git clone https://github.com/Karinaesparza96/plataforma-educacao-distribuida.git
 cd mba.modulo4
 ```
 
 ### 2. Executar o Sistema Completo
 
-**PowerShell (Windows - Recomendado):**
+**Manual (Docker Compose):**
 ```powershell
-# Script completo com configuração automática do RabbitMQ
-# Pode ser executado da raiz ou da pasta scripts
-.\scripts\start-all.ps1
-📋 O que o Script faz:
-🛑 Para todos os containers
-�� Limpa arquivos SQLite
-🗑️ Remove TODAS as imagens antigas (exceto Redis/RabbitMQ)
-🔍 Verifica limpeza completa
-🏗️ Recria imagens dos microserviços
-🚀 Inicia na ordem correta
-
-# Ou se estiver na pasta scripts:
-cd scripts
-.\start-all.ps1
-```
-
-**Manual (Docker Compose apenas):**
-```powershell
-# Iniciar infraestrutura
-docker-compose up -d rabbitmq redis
-
-# Aguardar inicialização (aguarde ~2 minutos)
-Start-Sleep -Seconds 120
-
 # Iniciar microserviços
-docker compose up -d auth-api conteudo-api alunos-api pagamentos-api
-
-# Aguardar APIs (aguarde ~1 minuto)
-Start-Sleep -Seconds 60
-
-# Iniciar BFF e Frontend
-docker-compose up -d bff-api frontend
-
-# ⚠️ IMPORTANTE: Configurar filas RabbitMQ manualmente em http://localhost:15672
+docker compose up --build
 ```
 
 ### 3. Acessar a Aplicação
@@ -433,16 +403,6 @@ A pasta `building-blocks/` contém componentes reutilizáveis entre microserviç
   - Implementação de **comunicação assíncrona** via RabbitMQ  
   - Base para publicação e consumo de eventos entre microserviços
   
-
-## 📜 Scripts
-Na pasta `scripts/` existem automações úteis:
-
-- `start-all.ps1` → Inicializa toda a plataforma (infra + serviços)  
-- `stop-all.ps1` → Para todos os containers  
-- `setup-rabbitmq.sh` → Configura filas e exchanges no RabbitMQ  
-- `rebuild-service.ps1` → Rebuild de um serviço específico  
-- `clean.ps1` → Remove containers, imagens e volumes antigos  
-
 ## 👤 Usuários de Exemplo
 A aplicação já possui usuários pré-configurados para testes:
 
@@ -450,8 +410,6 @@ A aplicação já possui usuários pré-configurados para testes:
 |---------|-------|--------|
 | `admin@auth.api` | `Teste@123` | Administrador |
 | `aluno1@auth.api` | `Teste@123` | Aluno |
-
-
 
 ## 📊 Monitoramento
 
@@ -700,4 +658,4 @@ mba.modulo4/
 
 ## 📝 Licença
 
-Este projeto é para fins educacionais (MBA DevXpert - Módulo 4).
+Este projeto é para fins educacionais (MBA DevXpert - Módulo 5).
