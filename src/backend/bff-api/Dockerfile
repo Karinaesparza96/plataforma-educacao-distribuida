@@ -3,7 +3,7 @@ WORKDIR /app
 EXPOSE 5000
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-WORKDIR /
+WORKDIR /src
 
 # Copiar arquivos de projeto
 COPY ["bff-api/src/BFF.API/BFF.API.csproj", "bff-api/src/BFF.API/"]
@@ -19,7 +19,7 @@ RUN dotnet restore "bff-api/src/BFF.API/BFF.API.csproj"
 COPY . .
 
 # Build da aplicação
-WORKDIR "/bff-api/src/BFF.API"
+WORKDIR "/src/bff-api/src/BFF.API"
 RUN dotnet build "BFF.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
