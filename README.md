@@ -9,174 +9,58 @@ Uma plataforma educacional moderna baseada em arquitetura de **microserviços**,
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3-orange)
 
 ### Integrantes
-- Hugo Domynique
-- Jairo Azevedo
-- Jason Santos do Amaral
 - Karina Esparza
-- Marco Aurelio Roque
 
 ## 📋 Índice
 
-- [Arquitetura do Sistema](#️-arquitetura-do-sistema)
 - [Pré-requisitos](#-pré-requisitos)
-- [Execução Rápida com Docker Compose](#execução-rápida-com-docker-compose)
-- [Microserviços](#-microserviços)
+- [Execução Rápida (Docker Compose)](#-execução-rápida-com-docker-compose)
+- [Execução no Kubernetes](#-execução-no-kubernetes)
+- [CI/CD Pipelines](#-cicd-pipelines)
 - [Infraestrutura](#%EF%B8%8F-infraestrutura)
 - [URLs de Acesso](#-urls-de-acesso)
 - [Desenvolvimento](#%EF%B8%8F-desenvolvimento)
 - [Testes](#-testes)
 - [Building Blocks](#-building-blocks)
 - [Usuários de Exemplo](#-usuários-de-exemplo)
-- [Monitoramento](#-monitoramento)
-- [Solução de Problemas](#-solução-de-problemas)
-- [Segurança](#-segurança)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Licença](#-licença)
 
-## 🏗️ Arquitetura do Sistema
-
 ### Visão Geral
 
-A plataforma é composta por **5 microserviços independentes** + **1 BFF** + **1 Frontend**, cada um com seu próprio banco de dados e responsabilidades específicas:
+A plataforma é composta por **5 microserviços independentes** + **1 BFF** + **1 Frontend**, cada um com seu próprio banco de dados e responsabilidades específicas.
 
-```mermaid
----
-config:
-  layout: fixed
----
-flowchart TD
- subgraph Front["🖥️ Front"]
-    direction LR
-        Frontend["🌐 Angular 18 SPA<br>📍 Porta: 4200"]
-  end
- subgraph BFF_Layer["🔗 BFF"]
-    direction LR
-        BFF["🔗 BFF API<br>📍 Porta: 5000<br>🏗️ Gateway"]
-  end
- subgraph Microservicos["🚀 Microserviços"]
-    direction LR
-        Auth["🔐 Auth API<br>📍 5001<br>🔑 Autenticação"]
-        Conteudo["📚 Conteudo API<br>📍 5002<br>📖 Cursos &amp; Aulas"]
-        Alunos["🎓 Alunos API<br>📍 5003<br>👨‍🎓 Matrículas"]
-        Pagamentos["💳 Pagamentos API<br>📍 5004<br>💰 Transações"]
-  end
- subgraph Infra["🏗️ Infra — Dados & Cache"]
-    direction LR
-        AuthDB["🗄️ Auth DB<br>📍 SQL Server"]
-        ConteudoDB["🗄️ Conteudo DB<br>📍 SQL Server"]
-        AlunosDB["🗄️ Alunos DB<br>📍 SQL Server"]
-        PagamentosDB["🗄️ Pagamentos DB<br>📍 SQL Server"]
-        Cache["🔴 Redis<br>📍 6379<br>⚡ Cache"]
-  end
- subgraph Mensageria["📬 Mensageria"]
-    direction TB
-        Rabbit["🐰 RabbitMQ"]
-  end
-    Frontend -- 1 --> BFF
-    BFF -- 2 --> Auth
-    BFF -- 3 --> Conteudo
-    BFF -- 4 --> Alunos
-    BFF -- 5 --> Pagamentos
-    Auth -- 6 --> AuthDB
-    Conteudo -- 7 --> ConteudoDB
-    Alunos -- 8 --> AlunosDB
-    Pagamentos -- 9 --> PagamentosDB
-    BFF -- 10 --> Cache
-    Auth -- 11 --> Rabbit
-    Alunos -- 12 --> Rabbit
-    Pagamentos -- 13 --> Rabbit
-    MensageriaStart[[" "]]
-     Frontend:::frontend
-     BFF:::bff
-     Auth:::microservice
-     Conteudo:::microservice
-     Alunos:::microservice
-     Pagamentos:::microservice
-     AuthDB:::infrastructure
-     ConteudoDB:::infrastructure
-     AlunosDB:::infrastructure
-     PagamentosDB:::infrastructure
-     Cache:::infrastructure
-     Rabbit:::messaging
-     MensageriaStart:::invisible
-    classDef frontGroup fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
-    classDef bffGroup fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px
-    classDef microGroup fill:#e8f5e8,stroke:#388e3c,stroke-width:3px
-    classDef infraGroup fill:#fff3e0,stroke:#f57c00,stroke-width:3px
-    classDef msgGroup fill:#f1f8e9,stroke:#689f38,stroke-width:3px
-    classDef invisible fill:none,stroke:none
-    classDef frontend fill:#bbdefb,stroke:#1976d2,stroke-width:2px,color:#000
-    classDef bff fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px,color:#000
-    classDef microservice fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
-    classDef infrastructure fill:#ffe0b2,stroke:#f57c00,stroke-width:2px,color:#000
-    classDef messaging fill:#dcedc8,stroke:#689f38,stroke-width:2px,color:#000
-    linkStyle 0 stroke:#1e88e5,stroke-width:3px,fill:none
-    linkStyle 1 stroke:#8e24aa,stroke-width:3px,fill:none
-    linkStyle 2 stroke:#43a047,stroke-width:3px,fill:none
-    linkStyle 3 stroke:#fdd835,stroke-width:3px,fill:none
-    linkStyle 4 stroke:#fb8c00,stroke-width:3px,fill:none
-    linkStyle 5 stroke:#d81b60,stroke-width:3px,fill:none
-    linkStyle 6 stroke:#5e35b1,stroke-width:3px,fill:none
-    linkStyle 7 stroke:#00acc1,stroke-width:3px,fill:none
-    linkStyle 8 stroke:#c0ca33,stroke-width:3px,fill:none
-    linkStyle 9 stroke:#f4511e,stroke-width:3px,fill:none
-    linkStyle 10 stroke:#3949ab,stroke-width:3px,fill:none
-    linkStyle 11 stroke:#6d4c41,stroke-width:3px,fill:none
-    linkStyle 12 stroke:#00796b,stroke-width:3px,fill:none
+## Estrutura do Projeto
 
 ```
-
-### Princípios Arquiteturais
-
-✅ Database per Service: Cada microserviço tem seu próprio banco.
-
-✅ Event-Driven Architecture: Comunicação assíncrona via RabbitMQ.
-
-✅ API Gateway Pattern: BFF centraliza comunicação com frontend e aplica políticas de resiliência.
-
-✅ Circuit Breaker & Retry: Implementado via Polly no BFF para chamadas downstream.
-
-✅ Health Checks Nativos: Endpoints /health e /ready para Kubernetes Probes.
-
-✅ Containerização: Todos os serviços são distribuídos via Docker.
-
-✅ Orquestração: Deployment e escalabilidade gerenciados por Kubernetes.
-
-✅ JWT Authentication: Autenticação centralizada.
-
-✅ Clean Architecture: DDD, SOLID, CQRS.
-
-### Estrutura Clean Architecture por Microserviço
-
-Cada microserviço segue a **Clean Architecture** com as seguintes camadas:
-
-#### 📁 **API Layer** (Controllers, Middleware)
-- Controllers REST
-- Middleware de autenticação
-- Configuração de Swagger
-- Validação de entrada
-
-#### 📁 **Application Layer** (Use Cases, Services)
-- DTOs de entrada/saída
-- Interfaces de serviços
-- Handlers de comandos/queries (CQRS)
-- Validação de negócio
-
-#### 📁 **Domain Layer** (Entities, Value Objects)
-- Entidades de domínio
-- Value Objects
-- Interfaces de repositórios
-- Eventos de domínio
-- Regras de negócio
-
-#### 📁 **Infrastructure Layer** (Data, External Services)
-- Implementação de repositórios
-- Contexto do Entity Framework
-- Integração com RabbitMQ
-- Configurações de banco de dados
-
-### 📋 **Opções Disponíveis**
-1. **Docker Compose**
+mba.modulo5/
+├── .github/                         # 🆕 Automação GitHub Actions
+│   └── workflows/
+│       ├── ci.yml                   # Pipeline de Build e Testes
+│       └── cd.yml                   # Pipeline de Deploy
+├── k8s/                             # 🆕 Orquestração Kubernetes
+│   ├── infra/                       # Infraestrutura (DBs, Rabbit, Redis)
+│   ├── services/                    # Manifestos dos Microserviços
+│   │   ├── auth/
+│   │   ├── alunos/
+|   |   ├── conteudo/
+|   |   ├── pagamentos/
+|   |   ├── bff/
+│   │   └── frontend/
+│   ├── deploy.sh                    # Script de Deploy Automatizado
+│   ├── ingress.yml                  # Regras de Roteamento
+│   └── namespace.yml                # Isolamento lógico
+├── src/backend/                     # Microserviços .NET
+│   ├── auth-api/
+│   ├── alunos-api/
+│   ├── conteudo-api/
+│   ├── pagamentos-api/
+│   ├── bff-api/
+│   └── building-blocks/             # Componentes compartilhados
+├── src/frontend/                    # Angular 18 SPA
+├── docker-compose.yml               # Orquestração local simples
+└── README.md
+```
 
 ## 🚀 Pré-requisitos
 
@@ -185,29 +69,18 @@ Cada microserviço segue a **Clean Architecture** com as seguintes camadas:
 - **Docker Compose** >= 2.0
 - **Git**
 
+### Para Kubernetes (Opcional)
+- **Kubectl** (CLI do Kubernetes)
+- **Minikube**, **Kind** ou **Docker Desktop** (com Kubernetes habilitado)
+
 ### Para Desenvolvimento
 - **.NET SDK 9.0**
 - **Node.js 18+** (para Angular)
 - **Visual Studio 2022** ou **VS Code**
 
-### Verificação da Instalação
-```bash
-# Verificar Docker
-docker --version
-docker-compose --version
+## 🐳 Execução Rápida com Docker Compose
 
-# Verificar Git
-git --version
-
-# (Opcional) Verificar .NET
-dotnet --version
-
-# (Opcional) Verificar Node.js
-node --version
-npm --version
-```
-
-##  Execução Rápida com Docker Compose
+Esta é a forma mais simples de rodar o ambiente completo localmente para desenvolvimento rápido.
 
 ### 1. Clonar o Repositório
 ```bash
@@ -215,11 +88,8 @@ git clone https://github.com/Karinaesparza96/plataforma-educacao-distribuida.git
 cd mba.modulo4
 ```
 
-### 2. Executar o Sistema Completo
-
-**Manual (Docker Compose):**
+### 2. Executar o Sistema 
 ```powershell
-# Iniciar microserviços
 docker compose up --build
 ```
 
@@ -230,58 +100,49 @@ Após ~5 minutos de inicialização:
 - **🌐 Frontend**: http://localhost:4200 (aluno1@auth.api/Teste@123 ou admin@auth.api/Teste@123)
 - **📊 RabbitMQ Management**: http://localhost:15672 (admin/admin123)
 
-## 🔧 Microserviços
+## ☸️ Execução no Kubernetes
 
-### Auth API (porta 5001)
-**Responsabilidade**: Autenticação e autorização
-- ✅ Cadastro e login de usuários
-- ✅ Emissão e validação de tokens JWT
-- ✅ Gerenciamento de roles (Admin/Aluno)
-- ✅ Refresh tokens
-- 📁 **Estrutura**: API → Application → Domain → Infrastructure
-- 📊 **Swagger**: https://localhost:5001/swagger
+Para simular um ambiente de produção e testar a orquestração, utilize os manifestos disponíveis na pasta `k8s/`.
 
-### Conteudo API (porta 5002)
-**Responsabilidade**: Gestão de conteúdo educacional
-- ✅ CRUD de cursos
-- ✅ CRUD de aulas
-- ✅ Gerenciamento de materiais didáticos
-- ✅ Estrutura curricular
-- 📁 **Estrutura**: API → Application → Domain → Infrastructure
-- 📊 **Swagger**: https://localhost:5002/swagger
+### Estrutura de Deploy
+O projeto conta com um script de automação (`deploy.sh`) que aplica configurações na seguinte ordem:
+1.  **Namespace**: Cria o isolamento lógico (`plataforma`).
+2.  **Infraestrutura**: SQL Server, RabbitMQ, Redis (StatefulSets/Deployments).
+3.  **Services**: Todos os microserviços (Auth, Alunos, Conteúdo, Pagamentos) e o BFF.
+4.  **Ingress**: Regras de roteamento de entrada.
 
-### Alunos API (porta 5003)
-**Responsabilidade**: Jornada do aluno
-- ✅ Sistema de matrículas
-- ✅ Tracking de progresso
-- ✅ Geração de certificados
-- ✅ Histórico acadêmico
-- ✅ Consumo de eventos de pagamento
-- 📁 **Estrutura**: API → Application → Domain → Infrastructure
-- 📊 **Swagger**: https://localhost:5003/swagger
+### Como Rodar
 
-### Pagamentos API (porta 5004)
-**Responsabilidade**: Processamento financeiro
-- ✅ Processamento de pagamentos
-- ✅ Consulta de status
-- ✅ Emissão de eventos
-- ✅ Histórico de transações
-- 🔄 Camada Anti-Corrupção (Pagamentos API)
-     Responsável por isolar integrações externas (gateways de pagamento) do domínio principal.
-     Evita que dependências externas contaminem as regras de negócio.
-     Implementada em src/backend/pagamentos-api/Pagamentos.AntiCorruption.
-- 📁 **Estrutura**: API → Application → Domain → Infrastructure
-- 📊 **Swagger**: https://localhost:5004/swagger
+1. Garanta que seu cluster (Minikube ou Docker Desktop) está rodando.
+2. Execute o script de deploy automatizado:
 
-### BFF API (porta 5000)
-**Responsabilidade**: Backend for Frontend
-- ✅ Orquestração de chamadas
-- ✅ Agregação de dados
-- ✅ Cache distribuído (Redis)
-- ✅ Rate limiting
-- ✅ Circuit breaker
-- 📁 **Estrutura**: API → Application → Domain → Infrastructure
-- 📊 **Swagger**: http://localhost:5000/swagger
+```bash
+cd k8s
+chmod +x deploy.sh
+./deploy.sh
+```
+O script garantirá que a infraestrutura (bancos e mensageria) esteja pronta antes de iniciar as APIs.
+
+3. Verificando os Pods
+```bash
+kubectl get pods -n plataforma
+```
+
+## 🔄 CI/CD Pipelines
+
+O projeto utiliza **GitHub Actions** para automação completa do ciclo de vida de desenvolvimento. Os workflows estão localizados no diretório `.github/workflows/`.
+
+### 🛠️ CI - Integração Contínua (`ci.yml`)
+Disparado automaticamente a cada *Pull Request* ou *Push* na branch principal (`main`).
+* **Build**: Restaura as dependências e compila todos os microserviços .NET e o Frontend Angular.
+* **Test**: Executa a suíte de testes unitários e de integração (xUnit) para garantir a integridade do código.
+* **Analysis**: Realiza validações de qualidade e cobertura de código (Coverlet).
+
+### 🚀 CD - Entrega Contínua (`cd.yml`)
+Disparado após a conclusão bem-sucedida do pipeline de CI na branch `main`.
+* **Dockerize**: Gera as imagens Docker para cada microserviço e para o frontend.
+* **Push**: Envia as imagens tagueadas para o Container Registry configurado.
+* **Deploy**: Aplica os manifestos de atualização no cluster Kubernetes utilizando as definições da pasta `k8s/`.
 
 ## 🏗️ Infraestrutura
 
@@ -533,84 +394,6 @@ As configurações atuais são para **desenvolvimento/demonstração**:
 - Senhas em texto claro
 - Certificados auto-assinados
 - Configurações de desenvolvimento
-
-## Estrutura do Projeto
-
-```
-mba.modulo4/
-├── src/backend/                    # Microserviços .NET
-│   ├── MBA.Modulo4.sln            # Solução principal
-│   ├── auth-api/                   # Auth.API.sln
-│   │   ├── src/
-│   │   │   ├── Auth.API/           # API Layer
-│   │   │   ├── Auth.Application/   # Application Layer
-│   │   │   ├── Auth.Domain/        # Domain Layer
-│   │   │   └── Auth.Infrastructure/# Infrastructure Layer
-│   │   └── tests/
-│   │       ├── Auth.UnitTests/     # Testes unitários
-│   │       └── Auth.IntegrationTests/ # Testes de integração
-│   ├── alunos-api/                 # Alunos.API.sln
-│   │   ├── src/
-│   │   │   ├── Alunos.API/         # API Layer
-│   │   │   ├── Alunos.Application/ # Application Layer
-│   │   │   ├── Alunos.Domain/      # Domain Layer
-│   │   │   └── Alunos.Infrastructure/ # Infrastructure Layer
-│   │   └── tests/
-│   │       ├── Alunos.UnitTests/   # Testes unitários
-│   │       └── Alunos.IntegrationTests/ # Testes de integração
-│   ├── conteudo-api/               # Conteudo.API.sln
-│   │   ├── src/
-│   │   │   ├── Conteudo.API/       # API Layer
-│   │   │   ├── Conteudo.Application/ # Application Layer
-│   │   │   ├── Conteudo.Domain/    # Domain Layer
-│   │   │   └── Conteudo.Infrastructure/ # Infrastructure Layer
-│   │   └── tests/
-│   │       ├── Conteudo.UnitTests/ # Testes unitários
-│   │       └── Conteudo.IntegrationTests/ # Testes de integração
-│   ├── pagamentos-api/             # Pagamentos.API.sln
-│   │   ├── src/
-│   │   │   ├── Pagamentos.API/     # API Layer
-│   │   │   ├── Pagamentos.Application/ # Application Layer
-│   │   │   ├── Pagamentos.Domain/  # Domain Layer
-│   │   │   ├── Pagamentos.Infrastructure/ # Infrastructure Layer
-│   │   │   └── Pagamentos.AntiCorruption/ # Camada anti-corrupção
-│   │   └── tests/
-│   │       ├── Pagamentos.UnitTests/ # Testes unitários
-│   │       └── Pagamentos.IntegrationTests/ # Testes de integração
-│   ├── bff-api/                    # BFF.API.sln
-│   │   ├── src/
-│   │   │   ├── BFF.API/            # API Layer
-│   │   │   ├── BFF.Application/    # Application Layer
-│   │   │   ├── BFF.Domain/         # Domain Layer
-│   │   │   └── BFF.Infrastructure/ # Infrastructure Layer
-│   │   └── tests/
-│   │       ├── BFF.UnitTests/      # Testes unitários
-│   │       └── BFF.IntegrationTests/ # Testes de integração
-│   └── building-blocks/             # Componentes compartilhados
-│       ├── core/                    # Core.csproj - Funcionalidades base
-│       │   ├── Communication/       # Comunicação entre serviços
-│       │   ├── Data/                # Abstrações de dados
-│       │   ├── DomainObjects/       # Objetos de domínio base
-│       │   ├── DomainValidations/   # Validações compartilhadas
-│       │   ├── Exceptions/          # Exceções customizadas
-│       │   ├── Identidade/          # Identificação e autenticação
-│       │   ├── Mediator/            # Padrão mediator
-│       │   ├── Messages/            # Mensagens e comandos
-│       │   ├── Notification/        # Sistema de notificações
-│       │   ├── Services/            # Serviços base
-│       │   ├── SharedDtos/          # DTOs compartilhados
-│       │   ├── Utils/               # Utilitários gerais
-│       │   └── Tests/               # Core.Tests.csproj
-│       └── MessageBus/              # MessageBus.csproj - Comunicação assíncrona
-├── src/frontend/                    # Angular 18 SPA
-├── infra/                           # (separar configs de infraestrutura, se aplicável)
-├── docs/                            # Documentação extra
-├── docker/                          # Configurações Docker
-├── docker-compose.yml               # Orquestração Docker
-├── docker-compose-infra.yml         # Infraestrutura apenas
-├── docker-compose-simple.yml        # Versão simplificada
-└── README.md                        # Este arquivo
-```
 
 ### Convenções
 - Usar **Clean Architecture** em todos os microserviços
