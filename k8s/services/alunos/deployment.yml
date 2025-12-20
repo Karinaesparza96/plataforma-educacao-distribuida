@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alunos-api
+  namespace: plataforma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alunos-api
+  template:
+    metadata:
+      labels:
+        app: alunos-api
+    spec:
+      containers:
+        - name: alunos-api
+          image: karinaesparza/plataformaedu-alunos-api:latest
+          ports:
+            - containerPort: 5003
+            - containerPort: 7003
+          envFrom:
+            - configMapRef:
+                name: alunos-api-config
+            - secretRef:
+                name: alunos-api-secret
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5003
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5003
+            initialDelaySeconds: 30
+            periodSeconds: 20

@@ -66,3 +66,17 @@ jobs:
             docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
             docker push "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
           done <<< "${{ steps.services.outputs.services }}"
+          
+      - name: Build & Push Frontend
+        run: |
+          IMAGE="${IMAGE_PREFIX}-frontend"
+          echo "Buildando imagem do frontend: $IMAGE"
+
+          docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
+            -f src/frontend/Dockerfile \
+            src/frontend
+
+          docker push "$DOCKERHUB_USERNAME/$IMAGE:latest"
+
+          docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
+          docker push "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"

@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: plataforma-ingress
+  namespace: plataforma
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: plataforma.local
+      http:
+        paths:
+          # Rota para BFF
+          - path: /api/bff(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: bff-api
+                port:
+                  number: 7000
+
+          # Rota padrão → frontend Angular
+          - path: /(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80

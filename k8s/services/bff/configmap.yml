@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bff-config
+  namespace: plataforma
+data:
+  ASPNETCORE_ENVIRONMENT: "Docker"
+  ASPNETCORE_URLS: "http://+:5000;http://+:7000"
+
+  RedisSettings__ConnectionString: "redis:6379"
+
+  ApiSettings__AuthApiUrl: "http://auth-api:5001"
+  ApiSettings__ConteudoApiUrl: "http://conteudo-api:5002"
+  ApiSettings__AlunosApiUrl: "http://alunos-api:5003"
+  ApiSettings__PagamentosApiUrl: "http://pagamentos-api:5004"

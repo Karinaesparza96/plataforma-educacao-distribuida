@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conteudo-api
+  namespace: plataforma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: conteudo-api
+  template:
+    metadata:
+      labels:
+        app: conteudo-api
+    spec:
+      containers:
+        - name: conteudo-api
+          image: karinaesparza/plataformaedu-conteudo-api:latest
+          ports:
+            - containerPort: 5002
+            - containerPort: 7002
+          envFrom:
+            - configMapRef:
+                name: conteudo-config
+            - secretRef:
+                name: conteudo-secret
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 7002
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 7002
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
