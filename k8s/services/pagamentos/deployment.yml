@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pagamentos-api
+  namespace: plataforma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pagamentos-api
+  template:
+    metadata:
+      labels:
+        app: pagamentos-api
+    spec:
+      containers:
+        - name: pagamentos-api
+          image: karinaesparza/plataformaedu-pagamentos-api:latest
+          ports:
+            - containerPort: 5004
+          envFrom:
+            - configMapRef:
+                name: payments-config
+            - secretRef:
+                name: payments-secret
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5004
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5004
+            initialDelaySeconds: 20
+            periodSeconds: 10

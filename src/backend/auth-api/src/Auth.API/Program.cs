@@ -16,11 +16,6 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.WebHost.ConfigureKestrel(options =>
-        {
-            options.ListenAnyIP(5001);
-        });
-
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
         TypeAdapterConfig.GlobalSettings.Scan(typeof(Program).Assembly);
