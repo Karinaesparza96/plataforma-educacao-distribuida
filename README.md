@@ -103,7 +103,6 @@ Disparado automaticamente a cada *Pull Request* ou *Push* na branch principal (`
 Disparado após a conclusão bem-sucedida do pipeline de CI na branch `main`.
 * **Dockerize**: Gera as imagens Docker para cada microserviço e para o frontend.
 * **Push**: Envia as imagens tagueadas para o Container Registry configurado.
-* **Deploy**: Aplica os manifestos de atualização no cluster Kubernetes utilizando as definições da pasta `k8s/`.
 
 ## 🏗️ Infraestrutura
 
