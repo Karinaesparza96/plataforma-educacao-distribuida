@@ -98,7 +98,6 @@ O projeto utiliza **GitHub Actions** para automação completa do ciclo de vida 
 Disparado automaticamente a cada *Pull Request* ou *Push* na branch principal (`main`).
 * **Build**: Restaura as dependências e compila todos os microserviços .NET e o Frontend Angular.
 * **Test**: Executa a suíte de testes unitários e de integração (xUnit) para garantir a integridade do código.
-* **Analysis**: Realiza validações de qualidade e cobertura de código (Coverlet).
 
 ### 🚀 CD - Entrega Contínua (`cd.yml`)
 Disparado após a conclusão bem-sucedida do pipeline de CI na branch `main`.
