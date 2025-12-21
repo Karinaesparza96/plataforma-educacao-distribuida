@@ -4,7 +4,6 @@ Uma plataforma educacional moderna baseada em arquitetura de **microserviços**,
 
 ![.NET](https://img.shields.io/badge/.NET-9.0-blue)
 ![Angular](https://img.shields.io/badge/Angular-18-red)
-![Kubernetes](https://img.shields.io/badge/Orquestração-Kubernetes-blueviolet)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-lightgrey)
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3-orange)
 
@@ -15,7 +14,6 @@ Uma plataforma educacional moderna baseada em arquitetura de **microserviços**,
 
 - [Pré-requisitos](#-pré-requisitos)
 - [Execução Rápida (Docker Compose)](#-execução-rápida-com-docker-compose)
-- [Execução no Kubernetes](#-execução-no-kubernetes)
 - [CI/CD Pipelines](#-cicd-pipelines)
 - [Infraestrutura](#%EF%B8%8F-infraestrutura)
 - [URLs de Acesso](#-urls-de-acesso)
@@ -38,18 +36,7 @@ mba.modulo5/
 │   └── workflows/
 │       ├── ci.yml                   # Pipeline de Build e Testes
 │       └── cd.yml                   # Pipeline de Deploy
-├── k8s/                             # 🆕 Orquestração Kubernetes
-│   ├── infra/                       # Infraestrutura (DBs, Rabbit, Redis)
-│   ├── services/                    # Manifestos dos Microserviços
-│   │   ├── auth/
-│   │   ├── alunos/
-|   |   ├── conteudo/
-|   |   ├── pagamentos/
-|   |   ├── bff/
-│   │   └── frontend/
-│   ├── deploy.sh                    # Script de Deploy Automatizado
-│   ├── ingress.yml                  # Regras de Roteamento
-│   └── namespace.yml                # Isolamento lógico
+├── k8s/                             # Ainda não implementado
 ├── src/backend/                     # Microserviços .NET
 │   ├── auth-api/
 │   ├── alunos-api/
@@ -102,31 +89,6 @@ Após ~5 minutos de inicialização:
 
 ## ☸️ Execução no Kubernetes
 
-Para simular um ambiente de produção e testar a orquestração, utilize os manifestos disponíveis na pasta `k8s/`.
-
-### Estrutura de Deploy
-O projeto conta com um script de automação (`deploy.sh`) que aplica configurações na seguinte ordem:
-1.  **Namespace**: Cria o isolamento lógico (`plataforma`).
-2.  **Infraestrutura**: SQL Server, RabbitMQ, Redis (StatefulSets/Deployments).
-3.  **Services**: Todos os microserviços (Auth, Alunos, Conteúdo, Pagamentos) e o BFF.
-4.  **Ingress**: Regras de roteamento de entrada.
-
-### Como Rodar
-
-1. Garanta que seu cluster (Minikube ou Docker Desktop) está rodando.
-2. Execute o script de deploy automatizado:
-
-```bash
-cd k8s
-chmod +x deploy.sh
-./deploy.sh
-```
-O script garantirá que a infraestrutura (bancos e mensageria) esteja pronta antes de iniciar as APIs.
-
-3. Verificando os Pods
-```bash
-kubectl get pods -n plataforma
-```
 
 ## 🔄 CI/CD Pipelines
 
