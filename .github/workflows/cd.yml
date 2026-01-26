@@ -3,20 +3,30 @@ name: CD - Docker Build & Push
 on:
   workflow_run:
     workflows: ["CI - Build & Test"]
-    types:
-      - completed
-    branches:
-      - main
+    types: [completed]
+    branches: [main]
 
 jobs:
-  docker:
+  verify-ci:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checar se CI terminou com sucesso
+        env:
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          if [[ "$CONCLUSION" != "success" ]]; then
+            echo "CI falhou ou não completou com sucesso (conclusion = $CONCLUSION) → cancelando deploy"
+            exit 1
+          fi
+
+  build-and-push:
+    needs: verify-ci
+    runs-on: ubuntu-latest
 
     env:
       REGISTRY: docker.io
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       IMAGE_PREFIX: plataformaedu
 
     steps:
@@ -34,11 +44,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
+      - name: Validar segredos do Docker Hub
+        run: |
+          if [[ -z "$DOCKERHUB_USERNAME" || -z "$DOCKERHUB_TOKEN" ]]; then
+            echo "::error::Segredos DOCKERHUB_USERNAME e/ou DOCKERHUB_TOKEN não estão configurados!"
+            exit 1
+          fi
+
       - name: Login no Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_PASSWORD }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
 
       - name: Encontrar serviços com Dockerfile
         id: services
@@ -48,25 +65,23 @@ jobs:
           echo "$SERVICES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Build & Push das imagens
+      - name: Build & Push das imagens backend
         run: |
           while IFS= read -r SERVICE; do
             NAME=$(basename "$SERVICE")
             IMAGE="${IMAGE_PREFIX}-${NAME}"
             echo "Buildando imagem: $IMAGE"
 
-            CONTEXT_DIR="src/backend"
-
             docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
               -f "$SERVICE/Dockerfile" \
-              "$CONTEXT_DIR"
+              src/backend
 
             docker push "$DOCKERHUB_USERNAME/$IMAGE:latest"
 
-            docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
-            docker push "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
+            docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}"
+            docker push "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}"
           done <<< "${{ steps.services.outputs.services }}"
-          
+
       - name: Build & Push Frontend
         run: |
           IMAGE="${IMAGE_PREFIX}-frontend"
@@ -78,5 +93,11 @@ jobs:
 
           docker push "$DOCKERHUB_USERNAME/$IMAGE:latest"
 
-          docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
-          docker push "$DOCKERHUB_USERNAME/$IMAGE:${GITHUB_SHA::7}"
+          docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}"
+          docker push "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}"
+
+      - name: Atualizar cache Docker
+        if: always()
+        run: |
+          rm -rf /tmp/.buildx-cache || true
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache || true
