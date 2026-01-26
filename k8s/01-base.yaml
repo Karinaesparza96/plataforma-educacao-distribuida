@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: plataforma
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+  namespace: plataforma
+type: Opaque
+stringData:  
+  sql-password: PlataformaEducacional123!
+  rabbit-password: admin123
+  jwt-secret: PlataformaEducacional123!SuperSecretKey2024@#$

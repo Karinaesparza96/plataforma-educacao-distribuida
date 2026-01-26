@@ -25,7 +25,7 @@ internal class Program
 
         var app = builder.Build();
 
-        if (app.Environment.IsDevelopment())
+        if (!app.Environment.IsProduction())
         {
             app.UseSwaggerConfiguration();
         }
