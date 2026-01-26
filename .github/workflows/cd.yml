@@ -26,7 +26,7 @@ jobs:
     env:
       REGISTRY: docker.io
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
       IMAGE_PREFIX: plataformaedu
 
     steps:
@@ -70,34 +70,30 @@ jobs:
           while IFS= read -r SERVICE; do
             NAME=$(basename "$SERVICE")
             IMAGE="${IMAGE_PREFIX}-${NAME}"
-            echo "Buildando imagem: $IMAGE"
 
-            docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
+            echo "Buildando imagem: $DOCKERHUB_USERNAME/$IMAGE"
+
+            docker build \
+              -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
+              -t "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}" \
               -f "$SERVICE/Dockerfile" \
               src/backend
 
             docker push "$DOCKERHUB_USERNAME/$IMAGE:latest"
-
-            docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}"
             docker push "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}"
           done <<< "${{ steps.services.outputs.services }}"
 
       - name: Build & Push Frontend
         run: |
           IMAGE="${IMAGE_PREFIX}-frontend"
-          echo "Buildando imagem do frontend: $IMAGE"
 
-          docker build -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
+          echo "Buildando imagem: $DOCKERHUB_USERNAME/$IMAGE"
+
+          docker build \
+            -t "$DOCKERHUB_USERNAME/$IMAGE:latest" \
+            -t "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}" \
             -f src/frontend/Dockerfile \
             src/frontend
 
           docker push "$DOCKERHUB_USERNAME/$IMAGE:latest"
-
-          docker tag "$DOCKERHUB_USERNAME/$IMAGE:latest" "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}"
           docker push "$DOCKERHUB_USERNAME/$IMAGE:${{ github.sha }}"
-
-      - name: Atualizar cache Docker
-        if: always()
-        run: |
-          rm -rf /tmp/.buildx-cache || true
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache || true
