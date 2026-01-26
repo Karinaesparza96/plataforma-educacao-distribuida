@@ -46,8 +46,8 @@ jobs:
 
       - name: Validar segredos do Docker Hub
         run: |
-          if [[ -z "$DOCKERHUB_USERNAME" || -z "$DOCKERHUB_TOKEN" ]]; then
-            echo "::error::Segredos DOCKERHUB_USERNAME e/ou DOCKERHUB_TOKEN não estão configurados!"
+          if [[ -z "$DOCKERHUB_USERNAME" || -z "$DOCKERHUB_PASSWORD" ]]; then
+            echo "::error::Segredos DOCKERHUB_USERNAME e/ou DOCKERHUB_PASSWORD não estão configurados!"
             exit 1
           fi
 
@@ -55,7 +55,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_TOKEN }}
+          password: ${{ env.DOCKERHUB_PASSWORD }}
 
       - name: Encontrar serviços com Dockerfile
         id: services
