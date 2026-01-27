@@ -50,7 +50,7 @@ services:
     networks:
       - plataforma-network
     healthcheck:
-      test: [ "CMD", "bash", "-c", "echo 'SELECT 1' | /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P PlataformaEducacional123!" ]
+      test: ["CMD", "bash", "-c", "timeout 5 bash -c '</dev/tcp/localhost/1433'"]
       interval: 10s
       timeout: 5s
       retries: 10
