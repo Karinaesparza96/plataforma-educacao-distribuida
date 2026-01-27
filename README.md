@@ -1,11 +1,13 @@
 # 🎓 Plataforma Educacional Distribuída com DevOps Completo
 
-Uma plataforma educacional moderna baseada em arquitetura de **microserviços**, desenvolvida com **.NET 9**, **Angular 18**, **RabbitMQ**, **SQL Server** e **Redis**. Este projeto evolui para um **ecossistema DevOps completo** com automação de build, testes, entrega contínua (CI/CD) e orquestração em **Kubernetes**.
+[![.NET](https://img.shields.io/badge/.NET-9.0-blue)](https://dotnet.microsoft.com)
+[![Angular](https://img.shields.io/badge/Angular-18-red)](https://angular.dev)
+[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-enabled-success)](https://kubernetes.io)
+[![CI - Build & Test](https://github.com/Karinaesparza96/plataforma-educacao-distribuida/actions/workflows/ci.yml/badge.svg)](https://github.com/Karinaesparza96/plataforma-educacao-distribuida/actions/workflows/ci.yml)
+[![CD - Deploy](https://github.com/Karinaesparza96/plataforma-educacao-distribuida/actions/workflows/cd.yml/badge.svg)](https://github.com/Karinaesparza96/plataforma-educacao-distribuida/actions/workflows/cd.yml)
 
-![.NET](https://img.shields.io/badge/.NET-9.0-blue)
-![Angular](https://img.shields.io/badge/Angular-18-red)
-![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-lightgrey)
-![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3-orange)
+Plataforma educacional distribuída construída com microserviços em .NET 9, frontend Angular, RabbitMQ para mensageria assíncrona, SQL Server para persistência e DevOps.
 
 ### Integrantes
 - Karina Esparza
@@ -14,19 +16,25 @@ Uma plataforma educacional moderna baseada em arquitetura de **microserviços**,
 
 - [Pré-requisitos](#-pré-requisitos)
 - [Execução Rápida (Docker Compose)](#-execução-rápida-com-docker-compose)
+- [Execução com Kubernetes](#-execução-com-kubernetes)
 - [CI/CD Pipelines](#-cicd-pipelines)
-- [Infraestrutura](#%EF%B8%8F-infraestrutura)
-- [URLs de Acesso](#-urls-de-acesso)
 - [Desenvolvimento](#%EF%B8%8F-desenvolvimento)
 - [Testes](#-testes)
-- [Building Blocks](#-building-blocks)
-- [Usuários de Exemplo](#-usuários-de-exemplo)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Licença](#-licença)
 
-### Visão Geral
+## Visão Geral
 
-A plataforma é composta por **5 microserviços independentes** + **1 BFF** + **1 Frontend**, cada um com seu próprio banco de dados e responsabilidades específicas.
+Projeto de plataforma de educação distribuída com arquitetura de microserviços. Inclui módulos de autenticação, gerenciamento de alunos, conteúdo educacional, processamento de pagamentos e um Backend for Frontend (BFF) para otimizar chamadas ao frontend Angular.
+
+## Tecnologias Principais
+
+- **Backend**: .NET 9, ASP.NET Core, Entity Framework Core, ASP.NET Core Identity, MediatR, MassTransit (RabbitMQ)
+- **Frontend**: Angular 18
+- **Infraestrutura**: SQL Server, RabbitMQ, Redis
+- **Containerização e Orquestração**: Docker, Docker Compose, Kubernetes
+- **CI/CD**: GitHub Actions
+- **Outros**: JWT para autenticação, Health Checks, Clean Architecture / DDD
 
 ## Estrutura do Projeto
 
@@ -36,7 +44,11 @@ mba.modulo5/
 │   └── workflows/
 │       ├── ci.yml                   # Pipeline de Build e Testes
 │       └── cd.yml                   # Pipeline de Deploy
-├── k8s/                             # Ainda não implementado
+├── k8s/                             # 🆕 Manifests Kubernetes
+│   ├── 01-base.yaml
+│   ├── 02-infra.yaml
+│   ├── 03-apis.yaml
+│   └── 04-front.yaml                            
 ├── src/backend/                     # Microserviços .NET
 │   ├── auth-api/
 │   ├── alunos-api/
@@ -45,7 +57,8 @@ mba.modulo5/
 │   ├── bff-api/
 │   └── building-blocks/             # Componentes compartilhados
 ├── src/frontend/                    # Angular 18 SPA
-├── docker-compose.yml               # Orquestração local simples
+├── docker-compose.yml               # 🆕 Orquestração local simples
+├── setup-k8s.ps1                    # 🆕 Script PowerShell para aplicar K8s local
 └── README.md
 ```
 
@@ -54,11 +67,9 @@ mba.modulo5/
 ### Obrigatórios
 - **Docker** >= 20.10
 - **Docker Compose** >= 2.0
-- **Git**
-
-### Para Kubernetes (Opcional)
+- **Docker Desktop** v4.20+ (com Kubernetes habilitado)
 - **Kubectl** (CLI do Kubernetes)
-- **Minikube**, **Kind** ou **Docker Desktop** (com Kubernetes habilitado)
+- **Git**
 
 ### Para Desenvolvimento
 - **.NET SDK 9.0**
@@ -77,7 +88,7 @@ cd mba.modulo4
 
 ### 2. Executar o Sistema 
 ```powershell
-docker compose up --build
+docker compose up -d --build
 ```
 
 ### 3. Acessar a Aplicação
@@ -87,8 +98,73 @@ Após ~5 minutos de inicialização:
 - **🌐 Frontend**: http://localhost:4200 (aluno1@auth.api/Teste@123 ou admin@auth.api/Teste@123)
 - **📊 RabbitMQ Management**: http://localhost:15672 (admin/admin123)
 
-## ☸️ Execução no Kubernetes
+## 4. Parar
+```bash
+docker compose down
+````
 
+## ☸️ Execução com Kubernetes
+
+## Passo 1: Instalar e abrir o Docker Desktop
+
+Baixe e instale:  
+https://www.docker.com/products/docker-desktop/
+
+Abra o aplicativo e aguarde a inicialização completa.
+
+## Passo 2: Habilitar e iniciar o Kubernetes
+
+1. Clique na engrenagem (**Settings**)
+2. Vá para **Kubernetes** (menu esquerdo)
+3. Marque **Enable Kubernetes**
+4. Clique em **Apply & Restart**
+5. Aguarde o status **"Kubernetes is running"** (2–5 minutos)
+
+## Passo 3: Executar o script de setup
+
+Na raiz do projeto, abra o **PowerShell** e execute:
+
+```powershell
+.\setup-k8s.ps1
+```
+O script aplica os manifests da pasta k8s/, cria o namespace plataforma e aguarda os pods.
+
+Verifique:
+
+```powershell
+kubectl get pods -n plataforma -w
+```
+## 4. Acessar os serviços
+- **Frontend**: http://localhost:4200 (aluno1@auth.api/Teste@123 ou admin@auth.api/Teste@123)
+- **BFF API**: http://localhost:5001/swagger
+
+## 5. Parar / Resetar o ambiente
+Remover namespace inteiro:
+```bash
+kubectl delete namespace plataforma
+````
+Ou só os recursos:
+```bash
+kubectl delete -f k8s/ -n plataforma
+````
+
+## 🧩 Comandos Úteis
+```powershell
+# Todos os pods
+kubectl get pods -n plataforma -o wide
+
+# Logs de um pod
+kubectl logs -f deployment/auth-api -n plataforma
+
+# Descrever pod com erro
+kubectl describe pod <nome-do-pod> -n plataforma
+
+# Reiniciar deployment
+kubectl rollout restart deployment/auth-api -n plataforma
+
+# Ver eventos
+kubectl get events -n plataforma --sort-by=.metadata.creationTimestamp
+````
 
 ## 🔄 CI/CD Pipelines
 
@@ -103,38 +179,6 @@ Disparado automaticamente a cada *Pull Request* ou *Push* na branch principal (`
 Disparado após a conclusão bem-sucedida do pipeline de CI na branch `main`.
 * **Dockerize**: Gera as imagens Docker para cada microserviço e para o frontend.
 * **Push**: Envia as imagens tagueadas para o Container Registry configurado.
-
-## 🏗️ Infraestrutura
-
-### RabbitMQ
-- **Management UI**: http://localhost:15672
-- **Credenciais**: admin/admin123
-
-### Redis
-- **Host**: localhost:6379
-- **Uso**: Cache distribuído para BFF
-
-## 🌐 URLs de Acesso
-
-### Aplicação
-| Serviço | URL | Deção |
-|---------|-----|-----------|
-| 📱 **Frontend** | http://localhost:4200 | Interface do usuário |
-| 🔗 **BFF API** | http://localhost:5000 | Gateway para frontend |
-
-### APIs (Swagger)
-| API | HTTP | Deção |
-|-----|-------|------|-----------|
-| 🔐 **Auth** | http://localhost:5001 | Autenticação |
-| 📚 **Conteudo** | http://localhost:5002 | Cursos e aulas |
-| 🎓 **Alunos** | http://localhost:5003 Matrículas |
-| 💳 **Pagamentos** | http://localhost:5004 | Transações |
-
-### Infraestrutura
-| Serviço | URL | Credenciais |
-|---------|-----|-------------|
-| 🐰 **RabbitMQ** | http://localhost:15672 | admin/admin123 |
-| 🔴 **Redis** | localhost:6379 | (sem senha) |
 
 ## 🛠️ Desenvolvimento
 
@@ -205,32 +249,6 @@ dotnet test src/backend/alunos-api/tests/Alunos.IntegrationTests
 
 ![Relatório de Cobertura](https://raw.githubusercontent.com/jasonamaral/mba.modulo4/main/src/tests/coverage-report/Coverage.jpg)
 
-
-## 🧩 Building Blocks
-A pasta `building-blocks/` contém componentes reutilizáveis entre microserviços:
-
-- **Core** (`Core.csproj`)  
-  - Communication (mensagens entre serviços)  
-  - DomainObjects (objetos base de domínio)  
-  - DomainValidations (validações reutilizáveis)  
-  - Exceptions (exceções customizadas)  
-  - Mediator (implementação do padrão Mediator)  
-  - Notification (notificações de domínio)  
-  - SharedDtos (DTOs comuns)  
-  - Utils (funções auxiliares)  
-
-- **MessageBus** (`MessageBus.csproj`)  
-  - Implementação de **comunicação assíncrona** via RabbitMQ  
-  - Base para publicação e consumo de eventos entre microserviços
-  
-## 👤 Usuários de Exemplo
-A aplicação já possui usuários pré-configurados para testes:
-
-| Usuário | Senha | Perfil |
-|---------|-------|--------|
-| `admin@auth.api` | `Teste@123` | Administrador |
-| `aluno1@auth.api` | `Teste@123` | Aluno |
-
 ## 📊 Monitoramento
 
 ### Logs dos Serviços
@@ -259,86 +277,6 @@ docker stats
 
 # Ver apenas containers da plataforma
 docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
-```
-
-## 🛑 Controle do Sistema
-
-### Parar Sistema
-```powershell
-docker-compose down
-```
-
-### Parar e Limpar Tudo (incluindo volumes)
-```bash
-# ⚠️ CUIDADO: Remove dados do banco
-docker-compose down -v
-docker system prune -f
-```
-
-### Reiniciar um Serviço
-```bash
-docker-compose restart [service-name]
-
-# Exemplo
-docker-compose restart auth-api
-```
-
-## 🔧 Solução de Problemas
-
-### Problema: Containers não iniciam
-**Solução:**
-```bash
-# Verificar se as portas estão ocupadas
-netstat -tulpn | grep -E '(4200|5000|5001|5002|5003|5004|1433|5672|15672|6379)'
-
-# Parar containers conflitantes
-docker-compose down
-docker container prune -f
-
-# Reiniciar
-docker-compose up
-```
-
-### Problema: Erro de conexão com banco
-**Solução:**
-```bash
-
-# Reiniciar SQL Server
-docker-compose restart sqlserver
-
-# Aguardar 60 segundos e reiniciar APIs
-sleep 60
-docker-compose restart auth-api conteudo-api alunos-api pagamentos-api
-```
-
-### Problema: Frontend não carrega
-**Solução:**
-```bash
-# Verificar logs do frontend
-docker-compose logs frontend
-
-# Verificar se BFF está rodando
-curl http://localhost:5000/health
-
-# Rebuild do frontend
-docker-compose build frontend
-docker-compose up -d frontend
-```
-
-### Problema: RabbitMQ não conecta
-**Solução:**
-```bash
-# Verificar RabbitMQ
-docker-compose logs rabbitmq
-
-# Reiniciar serviços que usam RabbitMQ
-docker-compose restart auth-api alunos-api pagamentos-api
-```
-
-### Monitoramento de Recursos
-```bash
-# Ver uso detalhado
-docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}\t{{.NetIO}}\t{{.BlockIO}}"
 ```
 
 ## 🔒 Segurança
