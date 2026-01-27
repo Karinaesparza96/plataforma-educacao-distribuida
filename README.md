@@ -83,7 +83,7 @@ Esta é a forma mais simples de rodar o ambiente completo localmente para desenv
 ### 1. Clonar o Repositório
 ```bash
 git clone https://github.com/Karinaesparza96/plataforma-educacao-distribuida.git
-cd mba.modulo4
+cd mba.modulo5
 ```
 
 ### 2. Executar o Sistema 
