@@ -53,7 +53,12 @@ internal class Program
             });
         });
 
-        builder.Services.AddHealthChecks();
+
+        var urls = builder.Configuration["Urls"];
+        if (!string.IsNullOrEmpty(urls))
+        {
+            builder.WebHost.UseUrls(urls);
+        }
 
         var app = builder.Build();
 
@@ -74,7 +79,9 @@ internal class Program
 
         app.MapControllers();
 
-        app.MapHealthChecks("/health");
+        app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", DateTime = DateTime.UtcNow }))
+            .WithName("HealthCheck")
+            .WithOpenApi();
 
         using (var scope = app.Services.CreateScope())
         {
