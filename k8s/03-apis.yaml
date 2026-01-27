@@ -20,10 +20,10 @@ spec:
         ports:
         - containerPort: 5001
         env:
+        - name: ASPNETCORE_URLS
+          value: "http://*:5001"
         - name: ASPNETCORE_ENVIRONMENT
           value: "Docker"
-        - name: ASPNETCORE_URLS
-          value: "http://+:5001"
         - name: ConnectionStrings__DefaultConnection
           value: "Server=sqlserver;Database=AuthDB;User Id=sa;Password=PlataformaEducacional123!;TrustServerCertificate=True;"
         - name: JwtSettings__SecretKey
