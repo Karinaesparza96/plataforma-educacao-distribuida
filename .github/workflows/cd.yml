@@ -118,17 +118,31 @@ jobs:
           KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG_BASE64 }}
         run: |
           if [[ -z "$KUBECONFIG_BASE64" ]]; then
-            echo "::error::Segredo KUBECONFIG_BASE64 não configurado!"
+            echo "::error::Segredo KUBECONFIG_BASE64 não está configurado no repositório!"
+            echo "Acesse: Settings → Secrets and variables → Actions → New repository secret"
             exit 1
           fi
+
+          # Cria o diretório ~/.kube
+          mkdir -p ~/.kube
+
+          # Decodifica o base64 e escreve o arquivo config
           echo "$KUBECONFIG_BASE64" | base64 -d > ~/.kube/config
+
+          # Protege o arquivo (permissões corretas)
           chmod 600 ~/.kube/config
 
-      - name: Verificar acesso ao cluster
-        run: kubectl get nodes
+          # Debug: confirma que o arquivo foi criado
+          ls -l ~/.kube/config || echo "Falha ao listar ~/.kube/config"
+          head -n 5 ~/.kube/config || echo "Falha ao ler primeiras linhas"
+
+      - name: Verificar conexão com o cluster Kubernetes
+        run: |
+          kubectl get nodes || echo "::warning::Não foi possível conectar ao cluster Kubernetes – verifique o KUBECONFIG_BASE64"
 
       - name: Atualizar imagens nos deployments
         run: |
+          # Mapeamento exato: deployment_name -> container_name
           declare -A DEPLOYMENTS=(
             ["auth-api"]="auth-api"
             ["alunos-api"]="alunos-api"
@@ -140,22 +154,21 @@ jobs:
 
           for DEPLOYMENT in "${!DEPLOYMENTS[@]}"; do
             CONTAINER="${DEPLOYMENTS[$DEPLOYMENT]}"
-            IMAGE_PREFIX="${{ env.IMAGE_PREFIX }}-${DEPLOYMENT}"
-            IMAGE="${{ env.DOCKERHUB_USERNAME }}/${IMAGE_PREFIX}:${{ github.sha }}"
+            IMAGE="${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_PREFIX }}-${DEPLOYMENT}:${{ github.sha }}"
 
             echo "========================================"
-            echo "Atualizando deployment/${DEPLOYMENT}"
+            echo "Atualizando: deployment/${DEPLOYMENT}"
             echo "Container: ${CONTAINER}"
             echo "Nova imagem: ${IMAGE}"
             echo "========================================"
 
-            # Atualiza a imagem do container no deployment
+            # Atualiza a imagem 
             kubectl set image deployment/${DEPLOYMENT} ${CONTAINER}=${IMAGE} -n ${{ env.K8S_NAMESPACE }} || {
-              echo "Aviso: Falha ao atualizar deployment/${DEPLOYMENT} (pode não existir ou nome do container diferente)"
+              echo "Aviso: Falha ao atualizar imagem de ${DEPLOYMENT} (pode não existir ou nome do container errado)"
             }
 
-            # Aguarda o rollout (timeout de 5 minutos)
+            # Aguarda rollout (timeout 5 min)
             kubectl rollout status deployment/${DEPLOYMENT} -n ${{ env.K8S_NAMESPACE }} --timeout=300s || {
-              echo "Aviso: Rollout status demorou ou falhou para ${DEPLOYMENT}"
+              echo "Aviso: Rollout demorou ou falhou para ${DEPLOYMENT} – verifique logs do pod"
             }
           done
