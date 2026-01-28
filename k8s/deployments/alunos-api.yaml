@@ -1,0 +1,62 @@
+# --- ALUNOS API ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alunos-api
+  namespace: plataforma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alunos-api
+  template:
+    metadata:
+      labels:
+        app: alunos-api
+    spec:
+      containers:
+      - name: alunos-api
+        image: karinaesparza/plataformaedu-alunos-api:latest
+        ports:
+        - containerPort: 5003
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Docker"
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: alunos-conn
+        - name: ExternalApis__ConteudoApi
+          value: "http://conteudo-api:5002"
+        - name: RabbitMQ__Host
+          value: "rabbitmq"
+        - name: RabbitMQ__Password
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: rabbit-password
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5003
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5003
+          initialDelaySeconds: 20
+          periodSeconds: 20
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 5003
+          failureThreshold: 15
+          periodSeconds: 10

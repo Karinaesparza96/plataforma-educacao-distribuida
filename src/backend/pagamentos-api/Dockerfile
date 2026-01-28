@@ -28,12 +28,29 @@ FROM base AS final
 WORKDIR /app
 
 # Instalar curl para health checks
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
+# OCI labels
+ARG BUILD_DATE="unknown"
+ARG VCS_REF="unknown"
+ARG VERSION="dev"
+LABEL org.opencontainers.image.title="pagamentos-api" \
+      org.opencontainers.image.description="Pagamentos API (.NET)" \
+      org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.revision=$VCS_REF \
+      org.opencontainers.image.version=$VERSION
+
+# Usuário não-root
+RUN getent group app >/dev/null || addgroup --system app \
+    && id -u app >/dev/null 2>&1 || adduser --system --ingroup app app \
+    && chown -R app:app /app
 
 # Copiar arquivos publicados
-COPY --from=publish /app/publish .
+COPY --from=publish --chown=app:app /app/publish .
 
 # Definir variáveis de ambiente para HTTP apenas
 ENV ASPNETCORE_URLS="http://+:5004"
+
+USER app
 
 ENTRYPOINT ["dotnet", "Pagamentos.API.dll"] 

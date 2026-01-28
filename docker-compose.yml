@@ -10,7 +10,7 @@ services:
       - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin123
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
@@ -43,7 +43,7 @@ services:
       - "1433:1433"
     environment:
       ACCEPT_EULA: Y
-      SA_PASSWORD: PlataformaEducacional123!
+      SA_PASSWORD: ${SQL_PASSWORD}
       MSSQL_PID: Express
     volumes:
       - sqlserver_data:/var/opt/mssql
@@ -67,16 +67,16 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5001;http://+:7001
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=PlataformaEducacional123!
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AuthDB;User Id=sa;Password=PlataformaEducacional123!;TrustServerCertificate=True;
-      - JwtSettings__SecretKey=PlataformaEducacional123!SuperSecretKey2024@#$
-      - JwtSettings__Issuer=PlataformaEducacional
-      - JwtSettings__Audience=PlataformaEducacional
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${AUTH_CERT_PASSWORD}
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AuthDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;
+      - JwtSettings__SecretKey=${JWT_SECRET}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
       - JwtSettings__ExpiryMinutes=15
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Port=5672
       - RabbitMQ__Username=admin
-      - RabbitMQ__Password=admin123
+      - RabbitMQ__Password=${RABBITMQ_DEFAULT_PASS}
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -101,14 +101,14 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5002;http://+:7002
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ConteudoDB;User Id=sa;Password=PlataformaEducacional123!;TrustServerCertificate=True;
-      - JwtSettings__SecretKey=PlataformaEducacional123!SuperSecretKey2024@#$
-      - JwtSettings__Issuer=PlataformaEducacional
-      - JwtSettings__Audience=PlataformaEducacional
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ConteudoDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;
+      - JwtSettings__SecretKey=${JWT_SECRET}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Port=5672
       - RabbitMQ__Username=admin
-      - RabbitMQ__Password=admin123
+      - RabbitMQ__Password=${RABBITMQ_DEFAULT_PASS}
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -135,14 +135,14 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5003;http://+:7003
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AlunosDB;User Id=sa;Password=PlataformaEducacional123!;TrustServerCertificate=True;
-      - JwtSettings__SecretKey=PlataformaEducacional123!SuperSecretKey2024@#$
-      - JwtSettings__Issuer=PlataformaEducacional
-      - JwtSettings__Audience=PlataformaEducacional
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AlunosDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;
+      - JwtSettings__SecretKey=${JWT_SECRET}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Port=5672
       - RabbitMQ__Username=admin
-      - RabbitMQ__Password=admin123
+      - RabbitMQ__Password=${RABBITMQ_DEFAULT_PASS}
       - ExternalApis__ConteudoApi=http://conteudo-api:7002
     depends_on:
       sqlserver:
@@ -170,14 +170,14 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5004;http://+:7004
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=PagamentosDB;User Id=sa;Password=PlataformaEducacional123!;TrustServerCertificate=True;
-      - JwtSettings__SecretKey=PlataformaEducacional123!SuperSecretKey2024@#$
-      - JwtSettings__Issuer=PlataformaEducacional
-      - JwtSettings__Audience=PlataformaEducacional
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=PagamentosDB;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;
+      - JwtSettings__SecretKey=${JWT_SECRET}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Port=5672
       - RabbitMQ__Username=admin
-      - RabbitMQ__Password=admin123
+      - RabbitMQ__Password=${RABBITMQ_DEFAULT_PASS}
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -234,7 +234,7 @@ services:
       dockerfile: Dockerfile
     container_name: plataforma-frontend
     ports:
-      - "4200:80"
+      - "4200:8080"
     environment:
     - API_URL=http://bff-api:5000
 

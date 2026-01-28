@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bff-api
+  namespace: plataforma
+spec:
+  selector:
+    app: bff-api
+  ports:
+    - port: 5000
+      targetPort: 5000

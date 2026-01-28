@@ -4,7 +4,9 @@ using Conteudo.Application.Commands.CadastrarCurso;
 using Conteudo.Application.Mappings;
 using Core.Identidade;
 using Mapster;
+using Polly;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text.Json;
 
 namespace Conteudo.API.Configuration;
@@ -24,6 +26,7 @@ public static class ApiConfiguration
             .AddServicesConfiguration()
             .AddMapsterConfiguration()
             .AddJwtConfiguration()
+            .AddResilienceConfiguration()
             .AddSwaggerConfigurationExtension();
     }
 
@@ -104,5 +107,48 @@ public static class ApiConfiguration
     {
         builder.Services.AddJwtConfiguration(builder.Configuration);
         return builder;
+    }
+
+    private static WebApplicationBuilder AddResilienceConfiguration(this WebApplicationBuilder builder)
+    {
+        var settings = builder.Configuration.GetSection("ResilienceSettings").Get<ResilienceSettings>() ?? new ResilienceSettings();
+
+        builder.Services.AddHttpClient("Default")
+            .AddPolicyHandler(GetRetryPolicy(settings))
+            .AddPolicyHandler(GetCircuitBreakerPolicy(settings));
+
+        return builder;
+    }
+
+    private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(ResilienceSettings settings)
+    {
+        return Policy<HttpResponseMessage>
+            .Handle<HttpRequestException>()
+            .Or<TaskCanceledException>()
+            .OrResult(r =>
+                r.StatusCode == HttpStatusCode.BadGateway ||
+                r.StatusCode == HttpStatusCode.ServiceUnavailable ||
+                r.StatusCode == HttpStatusCode.GatewayTimeout ||
+                r.StatusCode == HttpStatusCode.RequestTimeout ||
+                (int)r.StatusCode == 429)
+            .WaitAndRetryAsync(
+                settings.RetryCount,
+                retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+    }
+
+    private static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy(ResilienceSettings settings)
+    {
+        return Policy<HttpResponseMessage>
+            .Handle<HttpRequestException>()
+            .Or<TaskCanceledException>()
+            .OrResult(r =>
+                r.StatusCode == HttpStatusCode.BadGateway ||
+                r.StatusCode == HttpStatusCode.ServiceUnavailable ||
+                r.StatusCode == HttpStatusCode.GatewayTimeout ||
+                r.StatusCode == HttpStatusCode.RequestTimeout ||
+                (int)r.StatusCode == 429)
+            .CircuitBreakerAsync(
+                settings.CircuitBreakerThreshold,
+                TimeSpan.FromSeconds(settings.CircuitBreakerDurationSeconds));
     }
 }

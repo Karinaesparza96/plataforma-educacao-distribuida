@@ -1,0 +1,68 @@
+# --- AUTH API ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-api
+  namespace: plataforma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-api
+  template:
+    metadata:
+      labels:
+        app: auth-api
+    spec:
+      containers:
+      - name: auth-api
+        image: karinaesparza/plataformaedu-auth-api:latest
+        ports:
+        - containerPort: 5001
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://*:5001"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Docker"
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: auth-conn
+        - name: JwtSettings__SecretKey
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: jwt-secret
+        - name: RabbitMQ__Host
+          value: "rabbitmq"
+        - name: RabbitMQ__Password
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: rabbit-password
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 20
+          periodSeconds: 20
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          failureThreshold: 15
+          periodSeconds: 10

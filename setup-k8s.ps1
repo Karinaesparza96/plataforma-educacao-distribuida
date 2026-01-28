@@ -31,7 +31,89 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "OK" -ForegroundColor $ColorSuccess
 
-# 2. Deploy
+# 2. Criar namespace base
+Write-Host ""
+Write-Host "Aplicando namespace base..." -ForegroundColor $ColorHeader
+kubectl apply -f k8s/base/plataforma.yaml | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERRO: Falha ao aplicar namespace base." -ForegroundColor $ColorError
+    exit 1
+}
+Write-Host "OK" -ForegroundColor $ColorSuccess
+
+# 3. Gerar/aplicar secrets obrigatorios (automático)
+Write-Host ""
+Write-Host "Aplicando secrets obrigatorios..." -ForegroundColor $ColorHeader
+$secretFile = "k8s/secrets/app-secrets.yaml"
+$envFile = ".env"
+
+function Get-EnvValue([hashtable]$envMap, [string]$key) {
+    if (-not $envMap.ContainsKey($key) -or [string]::IsNullOrWhiteSpace($envMap[$key])) {
+        return $null
+    }
+    return $envMap[$key]
+}
+
+if (Test-Path $envFile) {
+    $envMap = @{}
+    Get-Content $envFile | ForEach-Object {
+        $line = $_.Trim()
+        if ($line -eq "" -or $line.StartsWith("#")) { return }
+        $parts = $line -split "=", 2
+        if ($parts.Count -lt 2) { return }
+        $k = $parts[0].Trim()
+        $v = $parts[1].Trim().Trim('"')
+        $envMap[$k] = $v
+    }
+
+    $sqlPassword = Get-EnvValue $envMap "SQL_PASSWORD"
+    $rabbitPassword = Get-EnvValue $envMap "RABBITMQ_DEFAULT_PASS"
+    $jwtSecret = Get-EnvValue $envMap "JWT_SECRET"
+
+    if ($sqlPassword -and $rabbitPassword -and $jwtSecret) {
+        @"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+  namespace: $Namespace
+type: Opaque
+stringData:
+  sql-password: $sqlPassword
+  rabbit-password: $rabbitPassword
+  jwt-secret: $jwtSecret
+  auth-conn: "Server=sqlserver;Database=AuthDB;User Id=sa;Password=$sqlPassword;TrustServerCertificate=True;"
+  conteudo-conn: "Server=sqlserver;Database=ConteudoDB;User Id=sa;Password=$sqlPassword;TrustServerCertificate=True;"
+  alunos-conn: "Server=sqlserver;Database=AlunosDB;User Id=sa;Password=$sqlPassword;TrustServerCertificate=True;"
+  pagamentos-conn: "Server=sqlserver;Database=PagamentosDB;User Id=sa;Password=$sqlPassword;TrustServerCertificate=True;"
+"@ | Set-Content -Path $secretFile -NoNewline
+    }
+}
+
+if (-not (Test-Path $secretFile)) {
+    $secretFile = "k8s/secrets/app-secrets.sample.yaml"
+}
+
+if (-not (Test-Path $secretFile)) {
+    Write-Host "ERRO: Arquivo de secrets nao encontrado (k8s/secrets/app-secrets.yaml ou k8s/secrets/app-secrets.sample.yaml)." -ForegroundColor $ColorError
+    exit 1
+}
+
+$secretContent = Get-Content $secretFile -Raw
+if ($secretContent -match "CHANGE_ME") {
+    Write-Host "ERRO: Secrets com placeholders 'CHANGE_ME'. Edite o arquivo antes de aplicar." -ForegroundColor $ColorError
+    Write-Host "Arquivo: $secretFile" -ForegroundColor $ColorWarning
+    exit 1
+}
+
+kubectl apply -f $secretFile | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERRO: Falha ao aplicar secrets." -ForegroundColor $ColorError
+    exit 1
+}
+Write-Host "OK" -ForegroundColor $ColorSuccess
+
+# 4. Deploy
 Write-Host ""
 Write-Host "Aplicando manifests..." -ForegroundColor $ColorHeader
 
@@ -41,12 +123,26 @@ function Apply { param([string]$file, [string]$desc)
     if ($LASTEXITCODE -eq 0) { Write-Host "OK" -ForegroundColor $ColorSuccess } else { Write-Host "FALHA" -ForegroundColor $ColorError }
 }
 
-Apply "k8s/01-base.yaml"     "1/4 - Base"
-Apply "k8s/02-infra.yaml"    "2/4 - Infra"
-Write-Host "Aguardando SqlServer (20 segundos)..." -ForegroundColor $ColorWarning
-Start-Sleep -Seconds 20
-Apply "k8s/03-apis.yaml"     "3/4 - APIs"
-Apply "k8s/04-frontend.yaml" "4/4 - Frontend"
+function ApplyFolder { param([string]$path, [string]$desc)
+    Write-Host "$desc " -ForegroundColor $ColorStep -NoNewline
+    $files = Get-ChildItem -Path $path -Filter *.yaml | Sort-Object Name
+    foreach ($f in $files) {
+        kubectl apply -f $f.FullName | Out-Null
+        if ($LASTEXITCODE -ne 0) { Write-Host "FALHA" -ForegroundColor $ColorError; return }
+    }
+    Write-Host "OK" -ForegroundColor $ColorSuccess
+}
+
+ApplyFolder "k8s/pvc"         "1/4 - PVCs"
+ApplyFolder "k8s/configmaps"  "2/4 - ConfigMaps"
+ApplyFolder "k8s/deployments" "3/4 - Deployments"
+Write-Host "Aguardando SqlServer ficar pronto..." -ForegroundColor $ColorWarning
+kubectl wait --for=condition=ready pod -l app=sqlserver -n $Namespace --timeout=180s 2>$null
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERRO: SqlServer nao ficou pronto dentro do timeout." -ForegroundColor $ColorError
+    exit 1
+}
+ApplyFolder "k8s/services"    "4/4 - Services"
 
 # 3. Aguarda pods e inicia port-forwards
 Write-Host ""
@@ -60,7 +156,7 @@ kubectl get pods -n $Namespace
 
 Write-Host "Iniciando port-forwards..." -ForegroundColor $ColorHeader
 Start-Process powershell -ArgumentList "-NoExit -Command kubectl port-forward svc/bff-api 5000:5000 -n $Namespace" -WindowStyle Minimized
-Start-Process powershell -ArgumentList "-NoExit -Command kubectl port-forward svc/frontend-service 4200:80 -n $Namespace" -WindowStyle Minimized
+Start-Process powershell -ArgumentList "-NoExit -Command kubectl port-forward deployment/frontend 4200:8080 -n $Namespace" -WindowStyle Minimized
 
 Write-Host ""
 Write-Host "Acessos:" -ForegroundColor $ColorSuccess

@@ -8,7 +8,7 @@ services:
       - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin123
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
@@ -31,7 +31,7 @@ services:
       - "1433:1433"
     environment:
       ACCEPT_EULA: Y
-      SA_PASSWORD: PlataformaEducacional123!
+      SA_PASSWORD: ${SQL_PASSWORD}
       MSSQL_PID: Express
     volumes:
       - sqlserver_data:/var/opt/mssql

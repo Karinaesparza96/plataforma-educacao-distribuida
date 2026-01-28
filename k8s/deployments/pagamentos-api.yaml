@@ -1,0 +1,60 @@
+# --- PAGAMENTOS API ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pagamentos-api
+  namespace: plataforma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pagamentos-api
+  template:
+    metadata:
+      labels:
+        app: pagamentos-api
+    spec:
+      containers:
+      - name: pagamentos-api
+        image: karinaesparza/plataformaedu-pagamentos-api:latest
+        ports:
+        - containerPort: 5004
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Docker"
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: pagamentos-conn
+        - name: RabbitMQ__Host
+          value: "rabbitmq"
+        - name: RabbitMQ__Password
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: rabbit-password
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5004
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5004
+          initialDelaySeconds: 20
+          periodSeconds: 20
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 5004
+          failureThreshold: 15
+          periodSeconds: 10

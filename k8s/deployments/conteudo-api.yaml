@@ -1,0 +1,61 @@
+# --- CONTEUDO API ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conteudo-api
+  namespace: plataforma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: conteudo-api
+  template:
+    metadata:
+      labels:
+        app: conteudo-api
+    spec:
+      containers:
+      - name: conteudo-api
+        image: karinaesparza/plataformaedu-conteudo-api:latest
+        ports:
+        - containerPort: 5002
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Docker"
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: conteudo-conn
+        - name: RabbitMQ__Host
+          value: "rabbitmq"
+        - name: RabbitMQ__Password
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: rabbit-password
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5002
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5002
+          initialDelaySeconds: 20
+          periodSeconds: 20
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 5002
+          failureThreshold: 15
+          periodSeconds: 10

@@ -1,0 +1,38 @@
+# --- SQL SERVER ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlserver
+  namespace: plataforma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlserver
+  template:
+    metadata:
+      labels:
+        app: sqlserver
+    spec:
+       containers:
+        - name: sqlserver
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          ports:
+          - containerPort: 1433
+          volumeMounts:
+          - name: sqlserver-data
+            mountPath: /var/opt/mssql
+          env:
+          - name: ACCEPT_EULA
+            value: "Y"
+          - name: MSSQL_PID
+            value: "Express"
+          - name: SA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: sql-password
+       volumes:
+       - name: sqlserver-data
+         persistentVolumeClaim:
+           claimName: sqlserver-data

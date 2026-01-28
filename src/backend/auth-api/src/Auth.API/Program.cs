@@ -27,6 +27,7 @@ internal class Program
 
         builder.Services.AddAuthorization();
         builder.Services.AddMemoryCache();
+        builder.Services.AddResilienceConfiguration(builder.Configuration);
 
         builder.Services.AddScoped<AuthService, AuthService>();
         builder.Services.AddScoped<IAuthDbContext>(provider => provider.GetRequiredService<AuthDbContext>());

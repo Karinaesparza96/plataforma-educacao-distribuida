@@ -9,6 +9,7 @@ builder
     .AddCorsConfig()
     .AddSwaggerConfig()
     .AddMessageBusConfiguration(builder.Configuration)
+    .AddResilienceConfiguration()
     .AddDbContextConfig()
     .AddJwtConfiguration()
     .AddMapsterConfiguration()
